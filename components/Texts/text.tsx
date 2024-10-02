@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, StyleSheet } from "react-native";
+import { loadFonts } from "@/constants/Font";
 
 interface LogoTextProps {
   children: string;
@@ -20,6 +21,7 @@ const styles = StyleSheet.create({
   logo: {
     fontSize: 31,
     color: "#1F2937",
+    fontFamily: "InterBold",
   },
   logoLetter: {
     fontSize: 31,

@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from "react";
+import { loadFonts } from "@/constants/Font";
 import { LogoText } from "@/components/Texts/text";
 import {
   Text,
@@ -7,9 +9,30 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { TextInput } from "react-native-paper";
+import { TextInput, ActivityIndicator, MD2Colors } from "react-native-paper";
 
 export default function Index() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    loadFonts()
+      .then(() => {
+        console.log("Fonts loaded successfully");
+        setFontsLoaded(true);
+      })
+      .catch((error) => {
+        console.error("Error loading fonts:", error);
+      });
+  }, []);
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator animating={true} color={MD2Colors.red800} />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
@@ -25,17 +48,18 @@ export default function Index() {
           mode="outlined"
           placeholder="Enter Your Name"
           right={<TextInput.Affix text="/14" />}
-        ></TextInput>
+        />
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Save Name</Text>
         </TouchableOpacity>
-        <Text style={styles.subTitle}>
+        <Text style={[styles.subTitle]}>
           Start taking your notes and never forget anything!
         </Text>
       </View>
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -52,7 +76,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#79EA99",
-    padding: 10,
+    padding: 15,
     borderRadius: 5,
     alignItems: "center",
     width: "90%",
@@ -61,19 +85,27 @@ const styles = StyleSheet.create({
   logo: {
     width: 201,
     height: 201,
-    marginVertical: 20,
+    marginBottom: 25,
   },
   title: {
     fontSize: 30,
     color: "#1F2937",
+    fontFamily: "InterBold",
+    width: "90%",
     textAlign: "left",
+    marginBottom: 16,
   },
   subTitle: {
     fontSize: 19,
     color: "#1f2937",
+    textAlign: "center",
+    margin: 10,
+    fontFamily: "InterBold",
   },
   buttonText: {
     fontWeight: "bold",
     color: "#1F2937",
+    fontFamily: "Roboto",
+    fontSize: 15,
   },
 });
