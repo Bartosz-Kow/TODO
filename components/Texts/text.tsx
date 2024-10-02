@@ -2,17 +2,11 @@ import React from "react";
 import { Text, StyleSheet } from "react-native";
 import { loadFonts } from "@/constants/Font";
 
-interface LogoTextProps {
-  children: string;
-}
-
-const LogoText: React.FC<LogoTextProps> = ({ children }) => {
-  const length = children.length;
-
+const LogoText = () => {
   return (
     <Text style={styles.logo}>
-      {length > 1 && <Text>{children.slice(0, length - 1)}</Text>}
-      <Text style={styles.logoLetter}>{children.charAt(length - 1)}</Text>{" "}
+      DO I<Text style={styles.logoLetter}>T</Text>
+      <Text style={styles.logo}> .</Text>
     </Text>
   );
 };

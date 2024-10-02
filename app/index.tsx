@@ -10,9 +10,14 @@ import {
   Image,
 } from "react-native";
 import { TextInput, ActivityIndicator, MD2Colors } from "react-native-paper";
+import { router } from "expo-router";
 
 export default function Index() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  const handleSaveName = () => {
+    router.push("/home");
+  };
 
   useEffect(() => {
     loadFonts()
@@ -36,7 +41,7 @@ export default function Index() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
-        <LogoText>DO IT</LogoText>
+        <LogoText />
         <Image
           style={styles.logo}
           source={require("/PROJEKTY/todo/Todo/assets/images/logo2.png")}
@@ -49,7 +54,7 @@ export default function Index() {
           placeholder="Enter Your Name"
           right={<TextInput.Affix text="/14" />}
         />
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleSaveName}>
           <Text style={styles.buttonText}>Save Name</Text>
         </TouchableOpacity>
         <Text style={[styles.subTitle]}>
@@ -100,7 +105,7 @@ const styles = StyleSheet.create({
     color: "#1f2937",
     textAlign: "center",
     margin: 10,
-    fontFamily: "InterBold",
+    fontFamily: "Inter",
   },
   buttonText: {
     fontWeight: "bold",
