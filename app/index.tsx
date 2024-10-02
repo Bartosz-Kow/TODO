@@ -1,3 +1,4 @@
+import { LogoText } from "@/components/Texts/text";
 import {
   Text,
   View,
@@ -12,9 +13,7 @@ export default function Index() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
-        <Text>
-          DO I<Text>T</Text>
-        </Text>
+        <LogoText>DO IT</LogoText>
         <Image
           style={styles.logo}
           source={require("/PROJEKTY/todo/Todo/assets/images/logo2.png")}
@@ -48,7 +47,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textInput: {
-    width: "80%",
+    width: "90%",
     marginBottom: 16,
   },
   button: {
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
-    width: "80%",
+    width: "90%",
     marginBottom: 16,
   },
   logo: {
