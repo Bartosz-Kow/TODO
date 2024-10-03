@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   },
   logoLetter: {
     fontSize: 31,
-    color: "#B0E9CA",
+    color: "#66D1A6",
   },
 });
 
