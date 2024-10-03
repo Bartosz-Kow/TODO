@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { StyleSheet, View, SafeAreaView, ScrollView, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import {
   FAB,
   Searchbar,
@@ -14,16 +22,61 @@ import { LogoText } from "@/components/Texts/text";
 
 const Home = () => {
   const [isVisible, setVisible] = useState(false);
-  const [note, setNote] = useState("");
+  const [isEditMode, setEditMode] = useState(false);
+  const [note, setNote] = useState<string>("");
+  const [tasks, setTasks] = useState<string[]>([]);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+
+  const handleUpdateNote = (newNote: string) => {
+    setNote(newNote);
+  };
+
+  const handleAddTask = () => {
+    if (note.trim()) {
+      if (isEditMode && editIndex !== null) {
+        const updatedTasks = tasks.map((task, index) =>
+          index === editIndex ? note : task
+        );
+        setTasks(updatedTasks);
+        setEditMode(false);
+      } else {
+        setTasks([...tasks, note]);
+      }
+      setNote("");
+    }
+  };
 
   const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
+  const hideModal = () => {
+    setVisible(false);
+    setEditMode(false);
+    setEditIndex(null);
+  };
+
+  const editTask = (index: number) => {
+    setEditMode(true);
+    setEditIndex(index);
+    setNote(tasks[index]);
+    showModal();
+  };
+
+  const renderTask = ({ item, index }: { item: string; index: number }) => {
+    return (
+      <TouchableOpacity onPress={() => editTask(index)}>
+        <View style={styles.taskItem}>
+          <Text style={styles.taskText}>{item}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <PaperProvider>
       <SafeAreaView style={styles.container}>
         <View style={styles.innerContainer}>
-          <LogoText />
+          <View style={styles.logo}>
+            <LogoText />
+          </View>
           <Searchbar
             style={styles.searchBar}
             placeholder="Search for notes"
@@ -90,6 +143,8 @@ const Home = () => {
                 style={styles.textInput}
                 textColor="black"
                 cursorColor="#66D1A6"
+                value={note}
+                onChangeText={handleUpdateNote}
                 theme={{
                   colors: {
                     primary: "#66D1A6",
@@ -97,12 +152,20 @@ const Home = () => {
                   },
                 }}
               />
-              <Button textColor="#66D1A6">Apply</Button>
+              <Button textColor="#66D1A6" onPress={handleAddTask}>
+                {isEditMode ? "Update" : "Apply"}
+              </Button>
               <Button textColor="#1F2937" onPress={hideModal}>
                 Cancel
               </Button>
             </Modal>
           </Portal>
+
+          <FlatList
+            data={tasks}
+            renderItem={renderTask}
+            keyExtractor={(item, index) => index.toString()}
+          />
 
           <FAB
             icon="plus"
@@ -121,6 +184,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingTop: 40,
+  },
+  logo: {
+    marginBottom: 10,
   },
   innerContainer: {
     flex: 1,
@@ -176,6 +242,16 @@ const styles = StyleSheet.create({
     padding: 15,
     fontSize: 16,
     color: "#374151",
+  },
+  taskItem: {
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: "#F1F1F1",
+    marginVertical: 5,
+  },
+  taskText: {
+    fontSize: 16,
+    color: "#333",
   },
 });
 
