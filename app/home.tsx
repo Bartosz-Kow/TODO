@@ -7,6 +7,11 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  StatusBar,
 } from "react-native";
 import {
   FAB,
@@ -24,8 +29,16 @@ const Home = () => {
   const [isVisible, setVisible] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
   const [note, setNote] = useState<string>("");
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<{ note: string; category: string }[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+
+  const categories = [
+    { name: "Important", color: "#FDE99D" },
+    { name: "Shopping", color: "#B0E9CA" },
+    { name: "Lecture notes", color: "#D9E8FC" },
+    { name: "To-do lists", color: "#FFD8F4" },
+  ];
 
   const handleUpdateNote = (newNote: string) => {
     setNote(newNote);
@@ -35,14 +48,16 @@ const Home = () => {
     if (note.trim()) {
       if (isEditMode && editIndex !== null) {
         const updatedTasks = tasks.map((task, index) =>
-          index === editIndex ? note : task
+          index === editIndex ? { note, category: selectedCategory } : task
         );
         setTasks(updatedTasks);
         setEditMode(false);
       } else {
-        setTasks([...tasks, note]);
+        setTasks([...tasks, { note, category: selectedCategory }]);
       }
       setNote("");
+      setSelectedCategory("");
+      setVisible(false);
     }
   };
 
@@ -51,129 +66,169 @@ const Home = () => {
     setVisible(false);
     setEditMode(false);
     setEditIndex(null);
+    setNote("");
+    setSelectedCategory("");
   };
 
   const editTask = (index: number) => {
     setEditMode(true);
     setEditIndex(index);
-    setNote(tasks[index]);
+    const taskToEdit = tasks[index];
+    setNote(taskToEdit.note);
+    setSelectedCategory(taskToEdit.category);
     showModal();
   };
 
-  const renderTask = ({ item, index }: { item: string; index: number }) => {
+  const renderTask = ({
+    item,
+    index,
+  }: {
+    item: { note: string; category: string };
+    index: number;
+  }) => {
+    const categoryColor =
+      categories.find((cat) => cat.name === item.category)?.color || "#FDE99D";
+
     return (
-      <TouchableOpacity onPress={() => editTask(index)}>
-        <View style={styles.taskItem}>
-          <Text style={styles.taskText}>{item}</Text>
-        </View>
-      </TouchableOpacity>
+      <View style={[styles.taskItem, { backgroundColor: categoryColor }]}>
+        <TouchableOpacity onPress={() => editTask(index)}>
+          <Text style={styles.taskText} numberOfLines={12}>
+            {item.note}
+          </Text>
+        </TouchableOpacity>
+      </View>
     );
   };
 
   return (
     <PaperProvider>
       <SafeAreaView style={styles.container}>
-        <View style={styles.innerContainer}>
-          <View style={styles.logo}>
-            <LogoText />
-          </View>
-          <Searchbar
-            style={styles.searchBar}
-            placeholder="Search for notes"
-            value={""}
-          />
-
-          <View style={styles.chipContainer}>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-            >
-              <Chip
-                style={styles.chipAll}
-                mode="outlined"
-                onPress={() => console.log("Pressed")}
-                textStyle={{ color: "white" }}
-              >
-                All
-              </Chip>
-              <Chip
-                style={styles.chip}
-                mode="outlined"
-                onPress={() => console.log("Pressed")}
-                textStyle={{ color: "black" }}
-              >
-                Important
-              </Chip>
-              <Chip
-                style={styles.chip}
-                mode="outlined"
-                onPress={() => console.log("Pressed")}
-                textStyle={{ color: "black" }}
-              >
-                Shopping
-              </Chip>
-              <Chip
-                style={styles.chip}
-                mode="outlined"
-                onPress={() => console.log("Pressed")}
-                textStyle={{ color: "black" }}
-              >
-                Lecture notes
-              </Chip>
-              <Chip
-                style={styles.chip}
-                mode="outlined"
-                onPress={() => console.log("Pressed")}
-                textStyle={{ color: "black" }}
-              >
-                To-do lists
-              </Chip>
-            </ScrollView>
-          </View>
-
-          <Portal>
-            <Modal
-              visible={isVisible}
-              onDismiss={hideModal}
-              contentContainerStyle={styles.modalContent}
-            >
-              <TextInput
-                label="Write notes!"
-                multiline
-                style={styles.textInput}
-                textColor="black"
-                cursorColor="#66D1A6"
-                value={note}
-                onChangeText={handleUpdateNote}
-                theme={{
-                  colors: {
-                    primary: "#66D1A6",
-                    placeholder: "black",
-                  },
-                }}
+        <KeyboardAvoidingView
+          style={styles.innerContainer}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.select({
+            ios: 40,
+            android: 0,
+          })}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.innerContainer}>
+              <StatusBar barStyle="light-content" backgroundColor="#1F2937" />
+              <View style={styles.logo}>
+                <LogoText />
+              </View>
+              <Searchbar
+                style={styles.searchBar}
+                placeholder="Search for notes"
+                value={""}
               />
-              <Button textColor="#66D1A6" onPress={handleAddTask}>
-                {isEditMode ? "Update" : "Apply"}
-              </Button>
-              <Button textColor="#1F2937" onPress={hideModal}>
-                Cancel
-              </Button>
-            </Modal>
-          </Portal>
 
-          <FlatList
-            data={tasks}
-            renderItem={renderTask}
-            keyExtractor={(item, index) => index.toString()}
-          />
+              <View style={styles.chipContainer}>
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                >
+                  <Chip
+                    style={styles.chipAll}
+                    mode="outlined"
+                    onPress={() => console.log("Pressed")}
+                    textStyle={{ color: "white" }}
+                  >
+                    All
+                  </Chip>
+                  {categories.map((category) => (
+                    <Chip
+                      key={category.name}
+                      style={styles.chip}
+                      mode="outlined"
+                      onPress={() => console.log("Pressed")}
+                      textStyle={{ color: "black" }}
+                    >
+                      {category.name}
+                    </Chip>
+                  ))}
+                </ScrollView>
+              </View>
 
-          <FAB
-            icon="plus"
-            color="white"
-            style={styles.fab}
-            onPress={showModal}
-          />
-        </View>
+              <Portal>
+                <Modal
+                  visible={isVisible}
+                  onDismiss={hideModal}
+                  contentContainerStyle={styles.modalContent}
+                >
+                  <TextInput
+                    label="Write notes!"
+                    multiline
+                    style={styles.textInput}
+                    textColor="black"
+                    cursorColor="#66D1A6"
+                    value={note}
+                    onChangeText={handleUpdateNote}
+                    theme={{
+                      colors: {
+                        primary: "#66D1A6",
+                        placeholder: "black",
+                      },
+                    }}
+                  />
+                  <View style={styles.modalCategoryContainer}>
+                    <Text style={styles.modalCategoryTitle}>
+                      Select category:
+                    </Text>
+                    <ScrollView
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
+                    >
+                      {categories.map((category) => (
+                        <Chip
+                          key={category.name}
+                          style={[
+                            styles.chip,
+                            selectedCategory === category.name &&
+                              styles.selectedChip,
+                          ]}
+                          mode="outlined"
+                          onPress={() => setSelectedCategory(category.name)}
+                          textStyle={{
+                            color:
+                              selectedCategory === category.name
+                                ? "white"
+                                : "black",
+                          }}
+                        >
+                          {category.name}
+                        </Chip>
+                      ))}
+                    </ScrollView>
+                  </View>
+                  <Button textColor="#66D1A6" onPress={handleAddTask}>
+                    {isEditMode ? "Update" : "Apply"}
+                  </Button>
+                  <Button textColor="#1F2937" onPress={hideModal}>
+                    Cancel
+                  </Button>
+                </Modal>
+              </Portal>
+
+              <FlatList
+                data={tasks.slice(0, 12)}
+                renderItem={renderTask}
+                keyExtractor={(item, index) => index.toString()}
+                numColumns={2}
+                showsVerticalScrollIndicator={false}
+              />
+
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <FAB
+                  icon="plus"
+                  color="white"
+                  style={styles.fab}
+                  onPress={showModal}
+                />
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </PaperProvider>
   );
@@ -197,6 +252,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 15,
     marginLeft: 15,
+    marginBottom: 15,
   },
   fab: {
     position: "absolute",
@@ -224,8 +280,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: "90%",
     alignSelf: "center",
-    position: "absolute",
-    bottom: 20,
+    marginBottom: -100,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -244,14 +299,27 @@ const styles = StyleSheet.create({
     color: "#374151",
   },
   taskItem: {
+    flex: 1,
+    flexBasis: "48%",
+    marginHorizontal: 1,
+    marginVertical: 8,
+    borderRadius: 20,
     padding: 15,
-    borderRadius: 8,
-    backgroundColor: "#F1F1F1",
-    marginVertical: 5,
   },
   taskText: {
     fontSize: 16,
     color: "#333",
+  },
+  modalCategoryContainer: {
+    marginVertical: 20,
+  },
+  modalCategoryTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  selectedChip: {
+    backgroundColor: "#66D1A6",
   },
 });
 
