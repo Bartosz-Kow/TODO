@@ -75,6 +75,11 @@ const Home = () => {
     setSelectedCategory("All");
   };
 
+  const removeTask = (index: number) => {
+    const newTasks = tasks.filter((_, i) => i !== index);
+    setTasks(newTasks);
+  };
+
   const editTask = (index: number) => {
     setEditMode(true);
     setEditIndex(index);
@@ -127,6 +132,8 @@ const Home = () => {
                 placeholder="Search for notes"
                 value={searchQuery}
                 onChangeText={(query) => setSearchQuery(query)}
+                iconColor={"black"}
+                placeholderTextColor={"black"}
               />
 
               <View style={styles.chipContainer}>
@@ -262,6 +269,17 @@ const Home = () => {
                   <Button textColor="#66D1A6" onPress={handleAddTask}>
                     {isEditMode ? "Update" : "Apply"}
                   </Button>
+                  <Button
+                    textColor="red"
+                    onPress={() => {
+                      if (editIndex !== null) {
+                        removeTask(editIndex);
+                        hideModal();
+                      }
+                    }}
+                  >
+                    Delete
+                  </Button>
                   <Button textColor="#1F2937" onPress={hideModal}>
                     Cancel
                   </Button>
@@ -292,7 +310,7 @@ const styles = StyleSheet.create({
   chipContainer: {
     flexDirection: "row",
     marginTop: 15,
-    marginLeft: 15,
+    marginLeft: 5,
     marginBottom: 15,
   },
   fab: {
@@ -309,7 +327,7 @@ const styles = StyleSheet.create({
     width: "95%",
     borderRadius: 12,
     backgroundColor: "white",
-    borderWidth: 0.5,
+    borderWidth: 1,
   },
   modalContent: {
     width: "90%",
@@ -327,9 +345,9 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: "100%",
-    height: 400,
+    height: 370,
     backgroundColor: "white",
-    borderWidth: 1,
+    borderTopWidth: 0,
     borderColor: "#E5E7EB",
     borderRadius: 12,
     padding: 15,

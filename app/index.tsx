@@ -75,10 +75,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     color: "#1F2937",
-
     width: "90%",
     textAlign: "left",
     marginBottom: 16,
+    fontWeight: "bold",
   },
   subTitle: {
     fontSize: 19,

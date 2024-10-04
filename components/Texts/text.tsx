@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   logo: {
     fontSize: 31,
     color: "#1F2937",
+    fontWeight: "bold",
   },
   logoLetter: {
     fontSize: 31,
