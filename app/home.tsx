@@ -32,6 +32,7 @@ const Home = () => {
   const [tasks, setTasks] = useState<{ note: string; category: string }[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const categories = [
     { name: "Important", color: "#FDE99D" },
@@ -120,7 +121,8 @@ const Home = () => {
               <Searchbar
                 style={styles.searchBar}
                 placeholder="Search for notes"
-                value={""}
+                value={searchQuery}
+                onChangeText={(query) => setSearchQuery(query)}
               />
 
               <View style={styles.chipContainer}>
@@ -211,7 +213,9 @@ const Home = () => {
               </Portal>
 
               <FlatList
-                data={tasks.slice(0, 12)}
+                data={tasks.filter((task) =>
+                  task.note.toLowerCase().includes(searchQuery.toLowerCase())
+                )}
                 renderItem={renderTask}
                 keyExtractor={(item, index) => index.toString()}
                 numColumns={2}
