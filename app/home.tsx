@@ -31,8 +31,8 @@ const Home = () => {
   const [note, setNote] = useState<string>("");
   const [tasks, setTasks] = useState<{ note: string; category: string }[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   const categories = [
     { name: "Important", color: "#FDE99D" },
@@ -56,19 +56,23 @@ const Home = () => {
       } else {
         setTasks([...tasks, { note, category: selectedCategory }]);
       }
+
       setNote("");
-      setSelectedCategory("");
+      setSelectedCategory("All");
       setVisible(false);
     }
   };
 
-  const showModal = () => setVisible(true);
+  const showModal = () => {
+    setVisible(true);
+    setSelectedCategory("Important");
+  };
   const hideModal = () => {
     setVisible(false);
     setEditMode(false);
     setEditIndex(null);
     setNote("");
-    setSelectedCategory("");
+    setSelectedCategory("All");
   };
 
   const editTask = (index: number) => {
@@ -88,7 +92,7 @@ const Home = () => {
     index: number;
   }) => {
     const categoryColor =
-      categories.find((cat) => cat.name === item.category)?.color || "#FDE99D";
+      categories.find((cat) => cat.name === item.category)?.color || "#FDE99D"; // Domyślny kolor to "Important"
 
     return (
       <View style={[styles.taskItem, { backgroundColor: categoryColor }]}>
@@ -104,6 +108,7 @@ const Home = () => {
   return (
     <PaperProvider>
       <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor="#1F2937" />
         <KeyboardAvoidingView
           style={styles.innerContainer}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -114,7 +119,6 @@ const Home = () => {
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.innerContainer}>
-              <StatusBar barStyle="light-content" backgroundColor="#1F2937" />
               <View style={styles.logo}>
                 <LogoText />
               </View>
@@ -131,20 +135,50 @@ const Home = () => {
                   showsHorizontalScrollIndicator={false}
                 >
                   <Chip
-                    style={styles.chipAll}
+                    style={[
+                      styles.chip,
+                      selectedCategory === "All" && styles.selectedChip,
+                      {
+                        backgroundColor:
+                          selectedCategory === "All" ? "#66D1A6" : "white",
+                      }, // Ustaw kolor dla chipu "All"
+                    ]}
                     mode="outlined"
-                    onPress={() => console.log("Pressed")}
-                    textStyle={{ color: "white" }}
+                    onPress={() => {
+                      setSelectedCategory("All");
+                      setSearchQuery(""); // Resetuj wyszukiwanie
+                    }}
+                    textStyle={{
+                      color: selectedCategory === "All" ? "white" : "black",
+                    }}
                   >
                     All
                   </Chip>
                   {categories.map((category) => (
                     <Chip
                       key={category.name}
-                      style={styles.chip}
+                      style={[
+                        styles.chip,
+                        selectedCategory === category.name &&
+                          styles.selectedChip,
+                        {
+                          backgroundColor:
+                            selectedCategory === category.name
+                              ? category.color
+                              : "white",
+                        }, // Ustaw kolor chipu
+                      ]}
                       mode="outlined"
-                      onPress={() => console.log("Pressed")}
-                      textStyle={{ color: "black" }}
+                      onPress={() => {
+                        setSelectedCategory(category.name);
+                        setSearchQuery(""); // Resetuj wyszukiwanie
+                      }}
+                      textStyle={{
+                        color:
+                          selectedCategory === category.name
+                            ? "white"
+                            : "black",
+                      }}
                     >
                       {category.name}
                     </Chip>
@@ -213,8 +247,11 @@ const Home = () => {
               </Portal>
 
               <FlatList
-                data={tasks.filter((task) =>
-                  task.note.toLowerCase().includes(searchQuery.toLowerCase())
+                data={tasks.filter(
+                  (task) =>
+                    (selectedCategory === "All" ||
+                      task.category === selectedCategory) && // Filtruj po kategorii
+                    task.note.toLowerCase().includes(searchQuery.toLowerCase())
                 )}
                 renderItem={renderTask}
                 keyExtractor={(item, index) => index.toString()}
@@ -222,14 +259,12 @@ const Home = () => {
                 showsVerticalScrollIndicator={false}
               />
 
-              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <FAB
-                  icon="plus"
-                  color="white"
-                  style={styles.fab}
-                  onPress={showModal}
-                />
-              </TouchableWithoutFeedback>
+              <FAB
+                icon="plus"
+                color="white"
+                style={styles.fab}
+                onPress={showModal}
+              />
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
@@ -268,10 +303,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     backgroundColor: "white",
   },
-  chipAll: {
-    marginHorizontal: 10,
-    backgroundColor: "#1F2937",
-  },
   searchBar: {
     width: "95%",
     borderRadius: 12,
@@ -284,7 +315,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: "90%",
     alignSelf: "center",
-    marginBottom: -100,
+    position: "absolute",
+    bottom: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
