@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { loadFonts } from "@/constants/Font";
 import { LogoText } from "@/components/Texts/text";
 import {
   Text,
@@ -18,25 +17,6 @@ export default function Index() {
   const handleSaveName = () => {
     router.push("/home");
   };
-
-  useEffect(() => {
-    loadFonts()
-      .then(() => {
-        console.log("Fonts loaded successfully");
-        setFontsLoaded(true);
-      })
-      .catch((error) => {
-        console.error("Error loading fonts:", error);
-      });
-  }, []);
-
-  if (!fontsLoaded) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator animating={true} color={MD2Colors.red800} />
-      </View>
-    );
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -95,7 +75,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     color: "#1F2937",
-    fontFamily: "InterBold",
+
     width: "90%",
     textAlign: "left",
     marginBottom: 16,
@@ -105,12 +85,10 @@ const styles = StyleSheet.create({
     color: "#1f2937",
     textAlign: "center",
     margin: 10,
-    fontFamily: "Inter",
   },
   buttonText: {
     fontWeight: "bold",
     color: "#1F2937",
-    fontFamily: "Roboto",
     fontSize: 15,
   },
 });

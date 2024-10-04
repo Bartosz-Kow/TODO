@@ -12,13 +12,12 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StatusBar,
+  Modal,
 } from "react-native";
 import {
   FAB,
   Searchbar,
   Chip,
-  Portal,
-  Modal,
   PaperProvider,
   TextInput,
   Button,
@@ -67,6 +66,7 @@ const Home = () => {
     setVisible(true);
     setSelectedCategory("Important");
   };
+
   const hideModal = () => {
     setVisible(false);
     setEditMode(false);
@@ -92,7 +92,7 @@ const Home = () => {
     index: number;
   }) => {
     const categoryColor =
-      categories.find((cat) => cat.name === item.category)?.color || "#FDE99D"; // Domyślny kolor to "Important"
+      categories.find((cat) => cat.name === item.category)?.color || "#FDE99D";
 
     return (
       <View style={[styles.taskItem, { backgroundColor: categoryColor }]}>
@@ -141,12 +141,12 @@ const Home = () => {
                       {
                         backgroundColor:
                           selectedCategory === "All" ? "#66D1A6" : "white",
-                      }, // Ustaw kolor dla chipu "All"
+                      },
                     ]}
                     mode="outlined"
                     onPress={() => {
                       setSelectedCategory("All");
-                      setSearchQuery(""); // Resetuj wyszukiwanie
+                      setSearchQuery("");
                     }}
                     textStyle={{
                       color: selectedCategory === "All" ? "white" : "black",
@@ -166,12 +166,12 @@ const Home = () => {
                             selectedCategory === category.name
                               ? category.color
                               : "white",
-                        }, // Ustaw kolor chipu
+                        },
                       ]}
                       mode="outlined"
                       onPress={() => {
                         setSelectedCategory(category.name);
-                        setSearchQuery(""); // Resetuj wyszukiwanie
+                        setSearchQuery("");
                       }}
                       textStyle={{
                         color:
@@ -186,12 +186,34 @@ const Home = () => {
                 </ScrollView>
               </View>
 
-              <Portal>
-                <Modal
-                  visible={isVisible}
-                  onDismiss={hideModal}
-                  contentContainerStyle={styles.modalContent}
-                >
+              <FlatList
+                data={tasks.filter(
+                  (task) =>
+                    (selectedCategory === "All" ||
+                      task.category === selectedCategory) &&
+                    task.note.toLowerCase().includes(searchQuery.toLowerCase())
+                )}
+                renderItem={renderTask}
+                keyExtractor={(item, index) => index.toString()}
+                numColumns={2}
+                showsVerticalScrollIndicator={false}
+              />
+
+              <FAB
+                icon="plus"
+                color="white"
+                style={styles.fab}
+                onPress={showModal}
+              />
+
+              <Modal
+                visible={isVisible}
+                onRequestClose={hideModal}
+                animationType="slide"
+                statusBarTranslucent={true}
+                transparent={true}
+              >
+                <View style={styles.modalContent}>
                   <TextInput
                     label="Write notes!"
                     multiline
@@ -243,28 +265,8 @@ const Home = () => {
                   <Button textColor="#1F2937" onPress={hideModal}>
                     Cancel
                   </Button>
-                </Modal>
-              </Portal>
-
-              <FlatList
-                data={tasks.filter(
-                  (task) =>
-                    (selectedCategory === "All" ||
-                      task.category === selectedCategory) && // Filtruj po kategorii
-                    task.note.toLowerCase().includes(searchQuery.toLowerCase())
-                )}
-                renderItem={renderTask}
-                keyExtractor={(item, index) => index.toString()}
-                numColumns={2}
-                showsVerticalScrollIndicator={false}
-              />
-
-              <FAB
-                icon="plus"
-                color="white"
-                style={styles.fab}
-                onPress={showModal}
-              />
+                </View>
+              </Modal>
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
@@ -310,13 +312,13 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
   },
   modalContent: {
-    padding: 20,
+    width: "90%",
+    height: "100%",
     backgroundColor: "white",
     borderRadius: 20,
-    width: "90%",
     alignSelf: "center",
-    position: "absolute",
-    bottom: 20,
+    padding: 20,
+    marginTop: "30%",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -325,8 +327,8 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: "100%",
-    height: 250,
-    backgroundColor: "#F9FAFB",
+    height: 400,
+    backgroundColor: "white",
     borderWidth: 1,
     borderColor: "#E5E7EB",
     borderRadius: 12,
