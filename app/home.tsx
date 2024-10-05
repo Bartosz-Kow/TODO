@@ -23,6 +23,7 @@ import {
   Button,
 } from "react-native-paper";
 import { LogoText } from "@/components/Texts/text";
+import CategoryChips from "@/components/HomeComponents/CategoryChips";
 
 const Home = () => {
   const [isVisible, setVisible] = useState(false);
@@ -135,63 +136,12 @@ const Home = () => {
                 iconColor={"black"}
                 placeholderTextColor={"black"}
               />
-
-              <View style={styles.chipContainer}>
-                <ScrollView
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}
-                >
-                  <Chip
-                    style={[
-                      styles.chip,
-                      selectedCategory === "All" && styles.selectedChip,
-                      {
-                        backgroundColor:
-                          selectedCategory === "All" ? "#66D1A6" : "white",
-                      },
-                    ]}
-                    mode="outlined"
-                    onPress={() => {
-                      setSelectedCategory("All");
-                      setSearchQuery("");
-                    }}
-                    textStyle={{
-                      color: selectedCategory === "All" ? "white" : "black",
-                    }}
-                  >
-                    All
-                  </Chip>
-                  {categories.map((category) => (
-                    <Chip
-                      key={category.name}
-                      style={[
-                        styles.chip,
-                        selectedCategory === category.name &&
-                          styles.selectedChip,
-                        {
-                          backgroundColor:
-                            selectedCategory === category.name
-                              ? category.color
-                              : "white",
-                        },
-                      ]}
-                      mode="outlined"
-                      onPress={() => {
-                        setSelectedCategory(category.name);
-                        setSearchQuery("");
-                      }}
-                      textStyle={{
-                        color:
-                          selectedCategory === category.name
-                            ? "white"
-                            : "black",
-                      }}
-                    >
-                      {category.name}
-                    </Chip>
-                  ))}
-                </ScrollView>
-              </View>
+              <CategoryChips
+                categories={categories}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                setSearchQuery={setSearchQuery}
+              />
 
               <FlatList
                 data={tasks.filter(
@@ -307,12 +257,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
-  chipContainer: {
-    flexDirection: "row",
-    marginTop: 15,
-    marginLeft: 5,
-    marginBottom: 15,
-  },
+
   fab: {
     position: "absolute",
     right: 20,

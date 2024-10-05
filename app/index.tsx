@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { LogoText } from "@/components/Texts/text";
 import {
   Text,
@@ -10,10 +10,19 @@ import {
 } from "react-native";
 import { TextInput } from "react-native-paper";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Index() {
-  const handleSaveName = () => {
-    router.push("/home");
+  const [name, setName] = useState<string>("");
+
+  const storeData = async () => {
+    try {
+      await AsyncStorage.setItem("@storage_Key", name);
+      console.log("Name stored:", name);
+      router.push("/home");
+    } catch (e) {
+      console.log("Error storing data", e);
+    }
   };
 
   return (
@@ -31,8 +40,9 @@ export default function Index() {
           mode="outlined"
           placeholder="Enter Your Name"
           right={<TextInput.Affix text="/14" />}
+          onChangeText={(text) => setName(text)}
         />
-        <TouchableOpacity style={styles.button} onPress={handleSaveName}>
+        <TouchableOpacity style={styles.button} onPress={storeData}>
           <Text style={styles.buttonText}>Save Name</Text>
         </TouchableOpacity>
         <Text style={[styles.subTitle]}>
