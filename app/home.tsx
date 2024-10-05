@@ -5,8 +5,6 @@ import {
   SafeAreaView,
   ScrollView,
   Text,
-  FlatList,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
@@ -24,6 +22,7 @@ import {
 } from "react-native-paper";
 import { LogoText } from "@/components/Texts/text";
 import CategoryChips from "@/components/HomeComponents/CategoryChips";
+import TaskList from "@/components/HomeComponents/TaskList";
 
 const Home = () => {
   const [isVisible, setVisible] = useState(false);
@@ -90,27 +89,6 @@ const Home = () => {
     showModal();
   };
 
-  const renderTask = ({
-    item,
-    index,
-  }: {
-    item: { note: string; category: string };
-    index: number;
-  }) => {
-    const categoryColor =
-      categories.find((cat) => cat.name === item.category)?.color || "#FDE99D";
-
-    return (
-      <View style={[styles.taskItem, { backgroundColor: categoryColor }]}>
-        <TouchableOpacity onPress={() => editTask(index)}>
-          <Text style={styles.taskText} numberOfLines={12}>
-            {item.note}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
   return (
     <PaperProvider>
       <SafeAreaView style={styles.container}>
@@ -143,17 +121,12 @@ const Home = () => {
                 setSearchQuery={setSearchQuery}
               />
 
-              <FlatList
-                data={tasks.filter(
-                  (task) =>
-                    (selectedCategory === "All" ||
-                      task.category === selectedCategory) &&
-                    task.note.toLowerCase().includes(searchQuery.toLowerCase())
-                )}
-                renderItem={renderTask}
-                keyExtractor={(item, index) => index.toString()}
-                numColumns={2}
-                showsVerticalScrollIndicator={false}
+              <TaskList
+                tasks={tasks}
+                editTask={editTask}
+                categories={categories}
+                selectedCategory={selectedCategory}
+                searchQuery={searchQuery}
               />
 
               <FAB
