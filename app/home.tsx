@@ -3,27 +3,17 @@ import {
   StyleSheet,
   View,
   SafeAreaView,
-  ScrollView,
-  Text,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
   StatusBar,
-  Modal,
 } from "react-native";
-import {
-  FAB,
-  Searchbar,
-  Chip,
-  PaperProvider,
-  TextInput,
-  Button,
-} from "react-native-paper";
+import { FAB, Searchbar, PaperProvider } from "react-native-paper";
 import { LogoText } from "@/components/Texts/text";
 import CategoryChips from "@/components/HomeComponents/CategoryChips";
 import TaskList from "@/components/HomeComponents/TaskList";
-
+import NoteModal from "@/components/HomeComponents/NoteModal";
 const Home = () => {
   const [isVisible, setVisible] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
@@ -135,79 +125,19 @@ const Home = () => {
                 style={styles.fab}
                 onPress={showModal}
               />
-
-              <Modal
+              <NoteModal
                 visible={isVisible}
-                onRequestClose={hideModal}
-                animationType="slide"
-                statusBarTranslucent={true}
-                transparent={true}
-              >
-                <View style={styles.modalContent}>
-                  <TextInput
-                    label="Write notes!"
-                    multiline
-                    style={styles.textInput}
-                    textColor="black"
-                    cursorColor="#66D1A6"
-                    value={note}
-                    onChangeText={handleUpdateNote}
-                    theme={{
-                      colors: {
-                        primary: "#66D1A6",
-                        placeholder: "black",
-                      },
-                    }}
-                  />
-                  <View style={styles.modalCategoryContainer}>
-                    <Text style={styles.modalCategoryTitle}>
-                      Select category:
-                    </Text>
-                    <ScrollView
-                      horizontal={true}
-                      showsHorizontalScrollIndicator={false}
-                    >
-                      {categories.map((category) => (
-                        <Chip
-                          key={category.name}
-                          style={[
-                            styles.chip,
-                            selectedCategory === category.name &&
-                              styles.selectedChip,
-                          ]}
-                          mode="outlined"
-                          onPress={() => setSelectedCategory(category.name)}
-                          textStyle={{
-                            color:
-                              selectedCategory === category.name
-                                ? "white"
-                                : "black",
-                          }}
-                        >
-                          {category.name}
-                        </Chip>
-                      ))}
-                    </ScrollView>
-                  </View>
-                  <Button textColor="#66D1A6" onPress={handleAddTask}>
-                    {isEditMode ? "Update" : "Apply"}
-                  </Button>
-                  <Button
-                    textColor="red"
-                    onPress={() => {
-                      if (editIndex !== null) {
-                        removeTask(editIndex);
-                        hideModal();
-                      }
-                    }}
-                  >
-                    Delete
-                  </Button>
-                  <Button textColor="#1F2937" onPress={hideModal}>
-                    Cancel
-                  </Button>
-                </View>
-              </Modal>
+                hideModal={hideModal}
+                note={note}
+                setNote={handleUpdateNote}
+                categories={categories}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                isEditMode={isEditMode}
+                handleAddTask={handleAddTask}
+                editIndex={editIndex}
+                removeTask={removeTask}
+              />
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
@@ -237,63 +167,11 @@ const styles = StyleSheet.create({
     bottom: 20,
     backgroundColor: "#1F2937",
   },
-  chip: {
-    marginHorizontal: 10,
-    backgroundColor: "white",
-  },
   searchBar: {
     width: "95%",
     borderRadius: 12,
     backgroundColor: "white",
     borderWidth: 1,
-  },
-  modalContent: {
-    width: "90%",
-    height: "100%",
-    backgroundColor: "white",
-    borderRadius: 20,
-    alignSelf: "center",
-    padding: 20,
-    marginTop: "30%",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  textInput: {
-    width: "100%",
-    height: 370,
-    backgroundColor: "white",
-    borderTopWidth: 0,
-    borderColor: "#E5E7EB",
-    borderRadius: 12,
-    padding: 15,
-    fontSize: 16,
-    color: "#374151",
-  },
-  taskItem: {
-    flex: 1,
-    flexBasis: "48%",
-    marginHorizontal: 1,
-    marginVertical: 8,
-    borderRadius: 20,
-    padding: 15,
-  },
-  taskText: {
-    fontSize: 16,
-    color: "#333",
-  },
-  modalCategoryContainer: {
-    marginVertical: 20,
-  },
-  modalCategoryTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  selectedChip: {
-    backgroundColor: "#66D1A6",
   },
 });
 
