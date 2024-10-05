@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { LogoText } from "@/components/Texts/text";
 import {
   Text,
@@ -8,12 +8,10 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { TextInput, ActivityIndicator, MD2Colors } from "react-native-paper";
+import { TextInput } from "react-native-paper";
 import { router } from "expo-router";
 
 export default function Index() {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
-
   const handleSaveName = () => {
     router.push("/home");
   };
