@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Avatar, RadioButton, IconButton } from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Profile = () => {
   return (
@@ -14,7 +13,7 @@ const Profile = () => {
       </View>
 
       <TouchableOpacity>
-        <Avatar.Icon size={100} icon="account" style={styles.avatar} />
+        <Avatar.Icon size={80} icon="account" style={styles.avatar} />
       </TouchableOpacity>
 
       <Text style={styles.userName}>Bartosz</Text>
@@ -22,19 +21,19 @@ const Profile = () => {
       <View style={styles.statisticsContainer}>
         <Text style={styles.statisticsTitle}>Statistics:</Text>
         <View style={styles.statisticItem}>
-          <IconButton icon="check-circle" size={20} />
+          <IconButton icon="check-circle" size={18} />
           <Text style={styles.statisticLabel}>
             Added Tasks: <Text style={styles.statisticValue}>140</Text>
           </Text>
         </View>
         <View style={styles.statisticItem}>
-          <IconButton icon="delete-circle" size={20} />
+          <IconButton icon="delete-circle" size={18} />
           <Text style={styles.statisticLabel}>
             Deleted Tasks: <Text style={styles.statisticValue}>140</Text>
           </Text>
         </View>
         <View style={styles.statisticItem}>
-          <IconButton icon="star-circle" size={20} />
+          <IconButton icon="star-circle" size={18} />
           <Text style={styles.statisticLabel}>
             Favourite category:{" "}
             <Text style={styles.statisticValue}>Important</Text>
@@ -61,7 +60,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F9FA",
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    padding: 15,
     borderRadius: 12,
     shadowColor: "#000",
     shadowOffset: {
@@ -73,17 +72,17 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   userName: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
-    marginVertical: 10,
+    marginVertical: 5,
     color: "#333",
   },
   titleContainer: {
-    marginBottom: 15,
+    marginBottom: 10,
     alignItems: "center",
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     textAlign: "center",
     color: "#555",
     fontWeight: "600",
@@ -94,56 +93,55 @@ const styles = StyleSheet.create({
   },
   avatar: {
     backgroundColor: "#66D1A6",
-    marginVertical: 15,
+    marginVertical: 10,
   },
   statisticsContainer: {
-    marginVertical: 20,
+    marginVertical: 15,
     alignItems: "flex-start",
     width: "100%",
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     borderLeftWidth: 4,
     borderLeftColor: "#66D1A6",
   },
   statisticsTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#1F2937",
-    marginBottom: 10,
+    marginBottom: 5,
   },
   statisticItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 5,
-    paddingVertical: 5,
+    marginVertical: 3,
+    paddingVertical: 3,
     borderRadius: 6,
     backgroundColor: "#E9F5F0",
     width: "100%",
   },
   statisticLabel: {
-    fontSize: 16,
-    marginLeft: 8,
+    fontSize: 14,
+    marginLeft: 5,
     color: "#333",
   },
   statisticValue: {
     fontWeight: "bold",
     color: "#333",
   },
-  icon: {},
   modeTitle: {
-    fontSize: 18,
-    marginVertical: 10,
+    fontSize: 16,
+    marginVertical: 8,
     color: "#1F2937",
     fontWeight: "bold",
   },
   radioButtonContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 5,
+    marginVertical: 3,
     width: "100%",
   },
   radioButtonLabel: {
-    fontSize: 16,
-    marginLeft: 8,
+    fontSize: 14,
+    marginLeft: 5,
     color: "#333",
   },
 });
