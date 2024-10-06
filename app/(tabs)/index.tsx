@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   fab: {
     position: "absolute",
     right: 20,
-    bottom: 20,
+    bottom: 100,
     backgroundColor: "#1F2937",
   },
   searchBar: {

@@ -19,7 +19,7 @@ export default function Index() {
     try {
       await AsyncStorage.setItem("@storage_Key", name);
       console.log("Name stored:", name);
-      router.push("/home");
+      router.push("/(tabs)");
     } catch (e) {
       console.log("Error storing data", e);
     }
