@@ -8,6 +8,10 @@ const Profile = () => {
   const [name, setName] = useState<string | null>(null);
   const [addedTasksCount, setAddedTasksCount] = useState<number>(0);
   const [deletedTasksCount, setDeletedTasksCount] = useState<number>(0);
+  const [categoryCounts, setCategoryCounts] = useState<{
+    [key: string]: number;
+  }>({});
+  const [favoriteCategory, setFavoriteCategory] = useState<string>("");
 
   const readName = async () => {
     try {
@@ -24,9 +28,19 @@ const Profile = () => {
     try {
       const addedTask = await AsyncStorage.getItem("@addedTaskCount");
       const deletedTask = await AsyncStorage.getItem("@deletedTaskCount");
+      const savedCategoryCounts = await AsyncStorage.getItem("@categoryCounts");
 
       if (addedTask != null) setAddedTasksCount(parseInt(addedTask));
       if (deletedTask != null) setDeletedTasksCount(parseInt(deletedTask));
+      if (savedCategoryCounts != null) {
+        const counts = JSON.parse(savedCategoryCounts);
+        setCategoryCounts(counts);
+
+        const favorite = Object.keys(counts).reduce((a, b) =>
+          counts[a] > counts[b] ? a : b
+        );
+        setFavoriteCategory(favorite);
+      }
     } catch (e) {
       console.log("Error loading stats", e);
     }
@@ -77,7 +91,9 @@ const Profile = () => {
           <IconButton icon="star-circle" size={18} />
           <Text style={styles.statisticLabel}>
             Favourite category:{" "}
-            <Text style={styles.statisticValue}>Important</Text>
+            <Text style={styles.statisticValue}>
+              {favoriteCategory || "None"}
+            </Text>
           </Text>
         </View>
       </View>

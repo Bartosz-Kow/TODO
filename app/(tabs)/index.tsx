@@ -15,6 +15,7 @@ import CategoryChips from "@/components/HomeComponents/CategoryChips";
 import TaskList from "@/components/HomeComponents/TaskList";
 import NoteModal from "@/components/HomeComponents/NoteModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const Home = () => {
   const [isVisible, setVisible] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
@@ -26,6 +27,9 @@ const Home = () => {
 
   const [addedTasksCount, setAddedTasksCount] = useState<number>(0);
   const [deletedTasksCount, setDeletedTasksCount] = useState<number>(0);
+  const [categoryCounts, setCategoryCounts] = useState<{
+    [key: string]: number;
+  }>({});
 
   const categories = [
     { name: "Important", color: "#FDE99D" },
@@ -38,11 +42,19 @@ const Home = () => {
     const loadStats = async () => {
       const addedTask = await AsyncStorage.getItem("@addedTaskCount");
       const deletedTask = await AsyncStorage.getItem("@deletedTaskCount");
+      const savedCategoryCounts = await AsyncStorage.getItem("@categoryCounts");
+
       if (addedTask != null) setAddedTasksCount(parseInt(addedTask));
-      if (deletedTask != null) setAddedTasksCount(parseInt(deletedTask));
+      if (deletedTask != null) setDeletedTasksCount(parseInt(deletedTask));
+      if (savedCategoryCounts != null)
+        setCategoryCounts(JSON.parse(savedCategoryCounts));
     };
     loadStats();
   }, []);
+
+  useEffect(() => {
+    AsyncStorage.setItem("@categoryCounts", JSON.stringify(categoryCounts));
+  }, [categoryCounts]);
 
   const handleUpdateNote = (newNote: string) => {
     setNote(newNote);
@@ -57,10 +69,16 @@ const Home = () => {
         setTasks(updatedTasks);
         setEditMode(false);
       } else {
-        setTasks([...tasks, { note, category: selectedCategory }]);
+        const newTask = { note, category: selectedCategory };
+        setTasks([...tasks, newTask]);
 
         const newCount = addedTasksCount + 1;
         setAddedTasksCount(newCount);
+
+        setCategoryCounts((prevCounts) => ({
+          ...prevCounts,
+          [selectedCategory]: (prevCounts[selectedCategory] || 0) + 1,
+        }));
 
         await AsyncStorage.setItem("@addedTaskCount", newCount.toString());
       }
@@ -85,11 +103,19 @@ const Home = () => {
   };
 
   const removeTask = async (index: number) => {
+    const taskToRemove = tasks[index];
     const newTasks = tasks.filter((_, i) => i !== index);
     setTasks(newTasks);
 
     const newCount = deletedTasksCount + 1;
     setDeletedTasksCount(newCount);
+
+    if (taskToRemove.category in categoryCounts) {
+      setCategoryCounts((prevCounts) => ({
+        ...prevCounts,
+        [taskToRemove.category]: prevCounts[taskToRemove.category] - 1,
+      }));
+    }
 
     await AsyncStorage.setItem("@deletedTaskCount", newCount.toString());
   };
