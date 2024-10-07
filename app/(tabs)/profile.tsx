@@ -1,14 +1,32 @@
-import React from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Avatar, RadioButton, IconButton } from "react-native-paper";
 
 const Profile = () => {
+  const [name, setName] = useState<string | null>(null);
+
+  const readName = async () => {
+    try {
+      const value = await AsyncStorage.getItem("@storage_Key");
+      if (value !== null) {
+        setName(value);
+      }
+    } catch (e) {
+      console.log("Error reading data", e);
+    }
+  };
+
+  useEffect(() => {
+    readName();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>
-          Welcome <Text style={styles.boldText}>Bartosz!</Text> Now you can see
-          your stats and edit profile details!
+          Welcome <Text style={styles.boldText}>{name || "Bartosz"}!</Text> Now
+          you can see your stats and edit profile details!
         </Text>
       </View>
 
@@ -16,7 +34,7 @@ const Profile = () => {
         <Avatar.Icon size={80} icon="account" style={styles.avatar} />
       </TouchableOpacity>
 
-      <Text style={styles.userName}>Bartosz</Text>
+      <Text style={styles.userName}>{name || "Your Name"}</Text>
 
       <View style={styles.statisticsContainer}>
         <Text style={styles.statisticsTitle}>Statistics:</Text>

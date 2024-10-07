@@ -15,7 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Index() {
   const [name, setName] = useState<string>("");
 
-  const storeData = async () => {
+  const storeName = async () => {
     try {
       await AsyncStorage.setItem("@storage_Key", name);
       console.log("Name stored:", name);
@@ -42,7 +42,7 @@ export default function Index() {
           right={<TextInput.Affix text="/14" />}
           onChangeText={(text) => setName(text)}
         />
-        <TouchableOpacity style={styles.button} onPress={storeData}>
+        <TouchableOpacity style={styles.button} onPress={storeName}>
           <Text style={styles.buttonText}>Save Name</Text>
         </TouchableOpacity>
         <Text style={[styles.subTitle]}>
