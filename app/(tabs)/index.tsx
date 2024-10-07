@@ -88,7 +88,7 @@ const Home = () => {
     const newTasks = tasks.filter((_, i) => i !== index);
     setTasks(newTasks);
 
-    const newCount = deletedTasksCount - 1;
+    const newCount = deletedTasksCount + 1;
     setDeletedTasksCount(newCount);
 
     await AsyncStorage.setItem("@deletedTaskCount", newCount.toString());

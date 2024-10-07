@@ -1,10 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useState, useEffect } from "react";
+import { useFocusEffect } from "expo-router";
+import React, { useState, useCallback } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Avatar, RadioButton, IconButton } from "react-native-paper";
 
 const Profile = () => {
   const [name, setName] = useState<string | null>(null);
+  const [addedTasksCount, setAddedTasksCount] = useState<number>(0);
+  const [deletedTasksCount, setDeletedTasksCount] = useState<number>(0);
 
   const readName = async () => {
     try {
@@ -17,16 +20,31 @@ const Profile = () => {
     }
   };
 
-  useEffect(() => {
-    readName();
-  }, []);
+  const loadStats = async () => {
+    try {
+      const addedTask = await AsyncStorage.getItem("@addedTaskCount");
+      const deletedTask = await AsyncStorage.getItem("@deletedTaskCount");
+
+      if (addedTask != null) setAddedTasksCount(parseInt(addedTask));
+      if (deletedTask != null) setDeletedTasksCount(parseInt(deletedTask));
+    } catch (e) {
+      console.log("Error loading stats", e);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      readName();
+      loadStats();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>
-          Welcome <Text style={styles.boldText}>{name || "Bartosz"}!</Text> Now
-          you can see your stats and edit profile details!
+          Welcome <Text style={styles.boldText}>{name || "User"}!</Text> Now you
+          can see your stats and edit profile details!
         </Text>
       </View>
 
@@ -38,18 +56,23 @@ const Profile = () => {
 
       <View style={styles.statisticsContainer}>
         <Text style={styles.statisticsTitle}>Statistics:</Text>
+
         <View style={styles.statisticItem}>
           <IconButton icon="check-circle" size={18} />
           <Text style={styles.statisticLabel}>
-            Added Tasks: <Text style={styles.statisticValue}>140</Text>
+            Added Tasks:{" "}
+            <Text style={styles.statisticValue}>{addedTasksCount}</Text>
           </Text>
         </View>
+
         <View style={styles.statisticItem}>
           <IconButton icon="delete-circle" size={18} />
           <Text style={styles.statisticLabel}>
-            Deleted Tasks: <Text style={styles.statisticValue}>140</Text>
+            Deleted Tasks:{" "}
+            <Text style={styles.statisticValue}>{deletedTasksCount}</Text>
           </Text>
         </View>
+
         <View style={styles.statisticItem}>
           <IconButton icon="star-circle" size={18} />
           <Text style={styles.statisticLabel}>
