@@ -24,8 +24,6 @@ const Profile = () => {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       const selectedImageUri = result.assets[0].uri;
       setImage(selectedImageUri);
@@ -89,16 +87,20 @@ const Profile = () => {
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>
-          Welcome <Text style={styles.boldText}>{name || "User"}!</Text> Now you
-          can see your stats and edit profile details!
+          Welcome <Text style={styles.boldText}>{name || "User"}</Text>!{" "}
+          Customize your profile!
         </Text>
       </View>
 
       <TouchableOpacity onPress={pickImage}>
         {image ? (
-          <Avatar.Image size={80} source={{ uri: image }} />
+          <Avatar.Image
+            size={80}
+            source={{ uri: image }}
+            style={styles.avatar}
+          />
         ) : (
-          <Avatar.Icon size={80} icon="account" />
+          <Avatar.Icon size={80} icon="account" style={styles.avatar} />
         )}
       </TouchableOpacity>
 
@@ -194,14 +196,23 @@ const styles = StyleSheet.create({
   avatar: {
     backgroundColor: "#66D1A6",
     marginVertical: 10,
+    borderRadius: 40, // Zaokrąglenie avatarów
   },
   statisticsContainer: {
     marginVertical: 15,
     alignItems: "flex-start",
     width: "100%",
     paddingHorizontal: 5,
-    borderLeftWidth: 4,
-    borderLeftColor: "#66D1A6",
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: "#FFFFFF", // Tło dla sekcji statystyk
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
   statisticsTitle: {
     fontSize: 20,
@@ -213,10 +224,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 3,
-    paddingVertical: 3,
+    paddingVertical: 5,
     borderRadius: 6,
     backgroundColor: "#E9F5F0",
     width: "100%",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   statisticLabel: {
     fontSize: 14,
@@ -249,6 +267,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 5,
     color: "#333",
+    fontWeight: "bold",
   },
 });
 
