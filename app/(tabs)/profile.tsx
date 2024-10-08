@@ -3,6 +3,7 @@ import { useFocusEffect } from "expo-router";
 import React, { useState, useCallback } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Avatar, RadioButton, IconButton } from "react-native-paper";
+import * as ImagePicker from "expo-image-picker";
 
 const Profile = () => {
   const [name, setName] = useState<string | null>(null);
@@ -12,6 +13,22 @@ const Profile = () => {
     [key: string]: number;
   }>({});
   const [favoriteCategory, setFavoriteCategory] = useState<string>("");
+  const [image, setImage] = useState<string | null>(null);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
   const readName = async () => {
     try {
@@ -62,7 +79,7 @@ const Profile = () => {
         </Text>
       </View>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={pickImage}>
         <Avatar.Icon size={80} icon="account" style={styles.avatar} />
       </TouchableOpacity>
 
