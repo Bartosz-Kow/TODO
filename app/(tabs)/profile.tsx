@@ -80,7 +80,11 @@ const Profile = () => {
       </View>
 
       <TouchableOpacity onPress={pickImage}>
-        <Avatar.Icon size={80} icon="account" style={styles.avatar} />
+        {image ? (
+          <Avatar.Image size={80} source={{ uri: image }} />
+        ) : (
+          <Avatar.Icon size={80} icon="account" />
+        )}
       </TouchableOpacity>
 
       <Text style={styles.userName}>{name || "Your Name"}</Text>
