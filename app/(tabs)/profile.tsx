@@ -14,6 +14,7 @@ const Profile = () => {
   }>({});
   const [favoriteCategory, setFavoriteCategory] = useState<string>("");
   const [image, setImage] = useState<string | null>(null);
+  const [valueBtn, setValueBtn] = useState("lightMode");
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -134,13 +135,20 @@ const Profile = () => {
       </View>
 
       <Text style={styles.modeTitle}>Choose your app mode:</Text>
-      <View style={styles.radioButtonContainer}>
-        <RadioButton value="lightMode" />
-        <Text style={styles.radioButtonLabel}>Light mode</Text>
-      </View>
-      <View style={styles.radioButtonContainer}>
-        <RadioButton value="darkMode" />
-        <Text style={styles.radioButtonLabel}>Dark Mode</Text>
+      <View style={styles.radioButtonGroup}>
+        <RadioButton.Group
+          onValueChange={(newValueBtn) => setValueBtn(newValueBtn)}
+          value={valueBtn}
+        >
+          <View style={styles.radioButtonContainer}>
+            <RadioButton value="lightMode" color={"#66D1A6"} />
+            <Text style={styles.radioButtonLabel}>Light mode</Text>
+          </View>
+          <View style={styles.radioButtonContainer}>
+            <RadioButton value="darkMode" color={"#1F2937"} />
+            <Text style={styles.radioButtonLabel}>Dark Mode</Text>
+          </View>
+        </RadioButton.Group>
       </View>
     </View>
   );
@@ -224,6 +232,12 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     color: "#1F2937",
     fontWeight: "bold",
+  },
+  radioButtonGroup: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    width: "100%",
+    marginVertical: 5,
   },
   radioButtonContainer: {
     flexDirection: "row",
