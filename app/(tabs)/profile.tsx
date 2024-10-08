@@ -26,7 +26,9 @@ const Profile = () => {
     console.log(result);
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      const selectedImageUri = result.assets[0].uri;
+      setImage(selectedImageUri);
+      await AsyncStorage.setItem("@userImage", selectedImageUri);
     }
   };
 
@@ -63,10 +65,22 @@ const Profile = () => {
     }
   };
 
+  const loadImage = async () => {
+    try {
+      const storedImage = await AsyncStorage.getItem("@userImage");
+      if (storedImage !== null) {
+        setImage(storedImage);
+      }
+    } catch (e) {
+      console.log("Error loading image", e);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
       readName();
       loadStats();
+      loadImage();
     }, [])
   );
 
