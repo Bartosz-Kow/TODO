@@ -4,8 +4,10 @@ import React, { useState, useCallback } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Avatar, RadioButton, IconButton } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
+import { useTheme } from "@/constants/ThemeContext";
 
 const Profile = () => {
+  const { isDarkMode, setIsDarkMode } = useTheme();
   const [name, setName] = useState<string | null>(null);
   const [addedTasksCount, setAddedTasksCount] = useState<number>(0);
   const [deletedTasksCount, setDeletedTasksCount] = useState<number>(0);
@@ -14,7 +16,9 @@ const Profile = () => {
   }>({});
   const [favoriteCategory, setFavoriteCategory] = useState<string>("");
   const [image, setImage] = useState<string | null>(null);
-  const [valueBtn, setValueBtn] = useState("lightMode");
+  const [valueBtn, setValueBtn] = useState(
+    isDarkMode ? "darkMode" : "lightMode"
+  );
 
   const handleClearStatistics = async () => {
     try {
@@ -102,10 +106,22 @@ const Profile = () => {
     }, [])
   );
 
+  const handleChangeMode = (newValue: string) => {
+    setValueBtn(newValue);
+    setIsDarkMode(newValue === "darkMode");
+  };
+
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDarkMode ? "#1F2937" : "#F8F9FA" },
+      ]}
+    >
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>
+        <Text
+          style={[styles.title, { color: isDarkMode ? "#F8F9FA" : "#555" }]}
+        >
           Welcome <Text style={styles.boldText}>{name || "User"}</Text>!{" "}
           Customize your profile!
         </Text>
@@ -123,55 +139,152 @@ const Profile = () => {
         )}
       </TouchableOpacity>
 
-      <Text style={styles.userName}>{name || "Your Name"}</Text>
+      <Text
+        style={[styles.userName, { color: isDarkMode ? "#F8F9FA" : "#555" }]}
+      >
+        {name || "Your Name"}
+      </Text>
 
-      <View style={styles.statisticsContainer}>
-        <View style={styles.clearBtnContainer}>
-          <Text style={styles.statisticsTitle}>Statistics:</Text>
+      <View
+        style={[
+          styles.statisticsContainer,
+          { backgroundColor: isDarkMode ? "#66D1A6" : "white" },
+        ]}
+      >
+        <View
+          style={[
+            styles.clearBtnContainer,
+            { backgroundColor: isDarkMode ? "#2D3E50" : "white" },
+          ]}
+        >
+          <Text
+            style={[
+              styles.statisticsTitle,
+              { color: isDarkMode ? "white" : "#1F2937" },
+            ]}
+          >
+            Statistics:
+          </Text>
           <TouchableOpacity onPress={handleClearStatistics}>
             <Text style={styles.clearAllBtn}>Clear all</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.statisticItem}>
-          <IconButton icon="check-circle" size={18} />
-          <Text style={styles.statisticLabel}>
+        <View
+          style={[
+            styles.statisticItem,
+            { backgroundColor: isDarkMode ? "#2D3E50" : "#E9F5F0" },
+          ]}
+        >
+          <IconButton
+            icon="check-circle"
+            size={18}
+            iconColor={isDarkMode ? "#66D1A6" : "#333"}
+          />
+          <Text
+            style={[
+              styles.statisticLabel,
+              { color: isDarkMode ? "#F8F9FA" : "#555" },
+            ]}
+          >
             Added Tasks:{" "}
-            <Text style={styles.statisticValue}>{addedTasksCount}</Text>
+            <Text
+              style={[
+                styles.statisticLabel,
+                { color: isDarkMode ? "#F8F9FA" : "#555" },
+              ]}
+            >
+              {addedTasksCount}
+            </Text>
           </Text>
         </View>
 
-        <View style={styles.statisticItem}>
-          <IconButton icon="delete-circle" size={18} />
-          <Text style={styles.statisticLabel}>
+        <View
+          style={[
+            styles.statisticItem,
+            { backgroundColor: isDarkMode ? "#2D3E50" : "#E9F5F0" },
+          ]}
+        >
+          <IconButton
+            icon="delete-circle"
+            size={18}
+            iconColor={isDarkMode ? "#66D1A6" : "#333"}
+          />
+          <Text
+            style={[
+              styles.statisticLabel,
+              { color: isDarkMode ? "#F8F9FA" : "#555" },
+            ]}
+          >
             Deleted Tasks:{" "}
-            <Text style={styles.statisticValue}>{deletedTasksCount}</Text>
+            <Text
+              style={[
+                styles.statisticLabel,
+                { color: isDarkMode ? "white" : "#333" },
+              ]}
+            >
+              {deletedTasksCount}
+            </Text>
           </Text>
         </View>
 
-        <View style={styles.statisticItem}>
-          <IconButton icon="star-circle" size={18} />
-          <Text style={styles.statisticLabel}>
+        <View
+          style={[
+            styles.statisticItem,
+            { backgroundColor: isDarkMode ? "#2D3E50" : "#E9F5F0" },
+          ]}
+        >
+          <IconButton
+            icon="star-circle"
+            size={18}
+            iconColor={isDarkMode ? "#66D1A6" : "#333"}
+          />
+          <Text
+            style={[
+              styles.statisticLabel,
+              { color: isDarkMode ? "white" : "#333" },
+            ]}
+          >
             Favourite category:{" "}
-            <Text style={styles.statisticValue}>
+            <Text
+              style={[
+                styles.statisticLabel,
+                { color: isDarkMode ? "white" : "#333" },
+              ]}
+            >
               {favoriteCategory || "None"}
             </Text>
           </Text>
         </View>
       </View>
 
-      <Text style={styles.modeTitle}>Choose your app mode:</Text>
+      <Text
+        style={[styles.modeTitle, { color: isDarkMode ? "#F8F9FA" : "#555" }]}
+      >
+        Choose your app mode:
+      </Text>
       <View style={styles.radioButtonGroup}>
-        <RadioButton.Group
-          onValueChange={(newValueBtn) => setValueBtn(newValueBtn)}
-          value={valueBtn}
-        >
+        <RadioButton.Group onValueChange={handleChangeMode} value={valueBtn}>
           <View style={styles.radioButtonContainer}>
             <RadioButton value="lightMode" color={"#66D1A6"} />
-            <Text style={styles.radioButtonLabel}>Light mode</Text>
+            <Text
+              style={[
+                styles.radioButtonLabel,
+                { color: isDarkMode ? "#F8F9FA" : "#555" },
+              ]}
+            >
+              Light mode
+            </Text>
           </View>
           <View style={styles.radioButtonContainer}>
-            <RadioButton value="darkMode" color={"#1F2937"} />
-            <Text style={styles.radioButtonLabel}>Dark Mode</Text>
+            <RadioButton value="darkMode" />
+            <Text
+              style={[
+                styles.radioButtonLabel,
+                { color: isDarkMode ? "#F8F9FA" : "#555" },
+              ]}
+            >
+              Dark Mode
+            </Text>
           </View>
         </RadioButton.Group>
       </View>
@@ -182,7 +295,6 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8F9FA",
     justifyContent: "center",
     alignItems: "center",
     padding: 15,
@@ -203,7 +315,6 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 10,
     paddingVertical: 5,
-    backgroundColor: "#FFFFFF",
     borderRadius: 8,
     marginBottom: 10,
     shadowColor: "#000",
@@ -251,7 +362,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 10,
     borderRadius: 8,
-    backgroundColor: "#FFFFFF",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -272,7 +382,6 @@ const styles = StyleSheet.create({
     marginVertical: 3,
     paddingVertical: 5,
     borderRadius: 6,
-    backgroundColor: "#E9F5F0",
     width: "100%",
     shadowColor: "#000",
     shadowOffset: {
@@ -285,16 +394,13 @@ const styles = StyleSheet.create({
   statisticLabel: {
     fontSize: 14,
     marginLeft: 5,
-    color: "#333",
   },
   statisticValue: {
     fontWeight: "bold",
-    color: "#333",
   },
   modeTitle: {
     fontSize: 16,
     marginVertical: 8,
-    color: "#1F2937",
     fontWeight: "bold",
   },
   radioButtonGroup: {
@@ -312,7 +418,6 @@ const styles = StyleSheet.create({
   radioButtonLabel: {
     fontSize: 14,
     marginLeft: 5,
-    color: "#333",
     fontWeight: "bold",
   },
 });
