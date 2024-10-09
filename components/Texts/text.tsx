@@ -1,11 +1,16 @@
 import React from "react";
 import { Text, StyleSheet } from "react-native";
+import { useTheme } from "@/constants/ThemeContext";
 
 const LogoText = () => {
+  const { isDarkMode } = useTheme();
+
   return (
-    <Text style={styles.logo}>
+    <Text style={[styles.logo, { color: isDarkMode ? "white" : "#1F2937" }]}>
       DO I<Text style={styles.logoLetter}>T</Text>
-      <Text style={styles.logo}> .</Text>
+      <Text style={[styles.logo, { color: isDarkMode ? "white" : "#1F2937" }]}>
+        .
+      </Text>
     </Text>
   );
 };

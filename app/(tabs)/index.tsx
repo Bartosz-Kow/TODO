@@ -15,8 +15,10 @@ import CategoryChips from "@/components/HomeComponents/CategoryChips";
 import TaskList from "@/components/HomeComponents/TaskList";
 import NoteModal from "@/components/HomeComponents/NoteModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTheme } from "@/constants/ThemeContext";
 
 const Home = () => {
+  const { isDarkMode } = useTheme();
   const [isVisible, setVisible] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
   const [note, setNote] = useState<string>("");
@@ -131,8 +133,16 @@ const Home = () => {
 
   return (
     <PaperProvider>
-      <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" backgroundColor="#1F2937" />
+      <SafeAreaView
+        style={[
+          styles.container,
+          { backgroundColor: isDarkMode ? "#1F2937" : "#F8F9FA" },
+        ]}
+      >
+        <StatusBar
+          barStyle={isDarkMode ? "light-content" : "dark-content"}
+          backgroundColor={isDarkMode ? "#1F2937" : "#F8F9FA"}
+        />
         <KeyboardAvoidingView
           style={styles.innerContainer}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -147,12 +157,15 @@ const Home = () => {
                 <LogoText />
               </View>
               <Searchbar
-                style={styles.searchBar}
+                style={[
+                  styles.searchBar,
+                  { backgroundColor: isDarkMode ? "#2D3E50" : "white" },
+                ]}
                 placeholder="Search for notes"
                 value={searchQuery}
                 onChangeText={(query) => setSearchQuery(query)}
-                iconColor={"black"}
-                placeholderTextColor={"black"}
+                iconColor={isDarkMode ? "white" : "black"}
+                placeholderTextColor={isDarkMode ? "white" : "black"}
               />
               <CategoryChips
                 categories={categories}
@@ -172,7 +185,10 @@ const Home = () => {
               <FAB
                 icon="plus"
                 color="white"
-                style={styles.fab}
+                style={[
+                  styles.fab,
+                  { backgroundColor: isDarkMode ? "#66D1A6" : "#1F2937" },
+                ]}
                 onPress={showModal}
               />
               <NoteModal
@@ -199,7 +215,6 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8F9FA",
     paddingTop: 40,
   },
   logo: {
@@ -210,17 +225,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
-
   fab: {
     position: "absolute",
     right: 20,
     bottom: 100,
-    backgroundColor: "#1F2937",
   },
   searchBar: {
     width: "95%",
     borderRadius: 12,
-    backgroundColor: "white",
     borderWidth: 1,
   },
 });
