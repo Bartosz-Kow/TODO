@@ -16,6 +16,25 @@ const Profile = () => {
   const [image, setImage] = useState<string | null>(null);
   const [valueBtn, setValueBtn] = useState("lightMode");
 
+  const handleClearStatistics = async () => {
+    try {
+      await AsyncStorage.removeItem("@addedTaskCount");
+      await AsyncStorage.removeItem("@deletedTaskCount");
+      await AsyncStorage.removeItem("@categoryCounts");
+
+      setAddedTasksCount(0);
+      setDeletedTasksCount(0);
+      setCategoryCounts({});
+      setFavoriteCategory("");
+
+      await loadStats();
+
+      console.log("Statistics Cleared!");
+    } catch (e) {
+      console.log("Error:", e);
+    }
+  };
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -107,8 +126,12 @@ const Profile = () => {
       <Text style={styles.userName}>{name || "Your Name"}</Text>
 
       <View style={styles.statisticsContainer}>
-        <Text style={styles.statisticsTitle}>Statistics:</Text>
-
+        <View style={styles.clearBtnContainer}>
+          <Text style={styles.statisticsTitle}>Statistics:</Text>
+          <TouchableOpacity onPress={handleClearStatistics}>
+            <Text style={styles.clearAllBtn}>Clear all</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.statisticItem}>
           <IconButton icon="check-circle" size={18} />
           <Text style={styles.statisticLabel}>
@@ -172,6 +195,29 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  clearBtnContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  clearAllBtn: {
+    fontSize: 14,
+    color: "#66D1A6",
+    fontWeight: "bold",
   },
   userName: {
     fontSize: 20,
