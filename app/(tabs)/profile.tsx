@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   avatar: {
     backgroundColor: "#66D1A6",
     marginVertical: 10,
-    borderRadius: 40, // Zaokrąglenie avatarów
+    borderRadius: 40,
   },
   statisticsContainer: {
     marginVertical: 15,
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 10,
     borderRadius: 8,
-    backgroundColor: "#FFFFFF", // Tło dla sekcji statystyk
+    backgroundColor: "#FFFFFF",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
