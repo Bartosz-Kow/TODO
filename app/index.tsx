@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LogoText } from "@/components/Texts/text";
 import {
   Text,
@@ -14,6 +14,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Index() {
   const [name, setName] = useState<string>("");
+
+  useEffect(() => {
+    const checkStoredName = async () => {
+      try {
+        const storedName = await AsyncStorage.getItem("@storage_Key");
+        if (storedName) {
+          router.push("/(tabs)");
+        }
+      } catch (e) {
+        console.log("Error fetching name", e);
+      }
+    };
+
+    checkStoredName();
+  }, []);
 
   const storeName = async () => {
     try {
