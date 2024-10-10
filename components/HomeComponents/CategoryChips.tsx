@@ -1,6 +1,7 @@
 import React from "react";
 import { ScrollView, View, StyleSheet } from "react-native";
 import { Chip } from "react-native-paper";
+import { useTheme } from "@/constants/ThemeContext";
 
 interface CategoryChipsProps {
   categories: { name: string; color: string }[];
@@ -14,6 +15,8 @@ const CategoryChips: React.FC<CategoryChipsProps> = ({
   setSelectedCategory,
   setSearchQuery,
 }) => {
+  const { isDarkMode } = useTheme();
+
   return (
     <View style={styles.chipContainer}>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
@@ -22,7 +25,12 @@ const CategoryChips: React.FC<CategoryChipsProps> = ({
             styles.chip,
             selectedCategory === "All" && styles.selectedChip,
             {
-              backgroundColor: selectedCategory === "All" ? "#66D1A6" : "white",
+              backgroundColor:
+                selectedCategory === "All"
+                  ? "#66D1A6"
+                  : isDarkMode
+                  ? "#2D3E50"
+                  : "white",
             },
           ]}
           mode="outlined"
@@ -31,7 +39,12 @@ const CategoryChips: React.FC<CategoryChipsProps> = ({
             setSearchQuery("");
           }}
           textStyle={{
-            color: selectedCategory === "All" ? "white" : "black",
+            color:
+              selectedCategory === "All"
+                ? "white"
+                : isDarkMode
+                ? "white"
+                : "black",
           }}
         >
           All
@@ -44,7 +57,11 @@ const CategoryChips: React.FC<CategoryChipsProps> = ({
               selectedCategory === category.name && styles.selectedChip,
               {
                 backgroundColor:
-                  selectedCategory === category.name ? category.color : "white",
+                  selectedCategory === category.name
+                    ? category.color
+                    : isDarkMode
+                    ? "#2D3E50"
+                    : "white",
               },
             ]}
             mode="outlined"
@@ -53,7 +70,12 @@ const CategoryChips: React.FC<CategoryChipsProps> = ({
               setSearchQuery("");
             }}
             textStyle={{
-              color: selectedCategory === category.name ? "white" : "black",
+              color:
+                selectedCategory === category.name
+                  ? "white"
+                  : isDarkMode
+                  ? "white"
+                  : "black",
             }}
           >
             {category.name}
