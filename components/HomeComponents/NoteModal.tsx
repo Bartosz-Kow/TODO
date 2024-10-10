@@ -30,7 +30,7 @@ const NoteModal: React.FC<NoteModalProps> = ({
   editIndex,
   removeTask,
 }) => {
-  const { isDarkMode } = useTheme(); // Pobranie trybu z kontekstu
+  const { isDarkMode } = useTheme();
 
   return (
     <Modal
@@ -43,7 +43,7 @@ const NoteModal: React.FC<NoteModalProps> = ({
       <View
         style={[
           styles.modalContent,
-          { backgroundColor: isDarkMode ? "#1E293B" : "white" }, // Zmienione tło modala w trybie ciemnym
+          { backgroundColor: isDarkMode ? "#334155" : "white" },
         ]}
       >
         <TextInput
@@ -51,7 +51,7 @@ const NoteModal: React.FC<NoteModalProps> = ({
           multiline
           style={[
             styles.textInput,
-            { backgroundColor: isDarkMode ? "#334155" : "white" }, // Tło TextInput w trybie ciemnym
+            { backgroundColor: isDarkMode ? "#334155" : "white" },
           ]}
           textColor={isDarkMode ? "white" : "black"}
           cursorColor="#66D1A6"
@@ -60,7 +60,7 @@ const NoteModal: React.FC<NoteModalProps> = ({
           theme={{
             colors: {
               primary: "#66D1A6",
-              placeholder: isDarkMode ? "#D1D5DB" : "black", // Kolor placeholdera
+              placeholder: isDarkMode ? "#D1D5DB" : "black",
             },
           }}
         />
@@ -68,7 +68,7 @@ const NoteModal: React.FC<NoteModalProps> = ({
           <Text
             style={[
               styles.modalCategoryTitle,
-              { color: isDarkMode ? "white" : "black" }, // Kolor tekstu dla kategorii
+              { color: isDarkMode ? "white" : "black" },
             ]}
           >
             Select category:
@@ -85,7 +85,7 @@ const NoteModal: React.FC<NoteModalProps> = ({
                       selectedCategory === category.name
                         ? category.color
                         : isDarkMode
-                        ? "#334155" // Tło chipów w trybie ciemnym
+                        ? "#334155"
                         : "white",
                   },
                 ]}

@@ -47,7 +47,6 @@ export default function MainLayout() {
   );
 }
 
-// Style
 const styles = StyleSheet.create({
   tabBar: {
     borderTopWidth: 0,
