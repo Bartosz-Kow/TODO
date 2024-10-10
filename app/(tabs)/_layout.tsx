@@ -1,45 +1,55 @@
-// app/_layout.js
 import { Tabs } from "expo-router";
-import { ThemeProvider } from "@/constants/ThemeContext";
+import { ThemeProvider, useTheme } from "@/constants/ThemeContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { StyleSheet } from "react-native";
 
-export default function TabLayout() {
+const TabLayout = () => {
+  const { isDarkMode } = useTheme();
+
+  return (
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: isDarkMode ? "#66D1A6" : "#333",
+        tabBarStyle: [
+          styles.tabBar,
+          { backgroundColor: isDarkMode ? "#1F2937" : "#ffffff" },
+        ],
+        headerShown: false,
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="home" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="user" color={color} />
+          ),
+        }}
+      />
+    </Tabs>
+  );
+};
+
+export default function MainLayout() {
   return (
     <ThemeProvider>
-      <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: "#66D1A6",
-          tabBarStyle: styles.tabBar,
-          headerShown: false,
-        }}
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: "Home",
-            tabBarIcon: ({ color }) => (
-              <FontAwesome size={28} name="home" color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            title: "Profile",
-            tabBarIcon: ({ color }) => (
-              <FontAwesome size={28} name="user" color={color} />
-            ),
-          }}
-        />
-      </Tabs>
+      <TabLayout />
     </ThemeProvider>
   );
 }
 
+// Style
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: "#ffffff",
     borderTopWidth: 0,
     borderRadius: 20,
     position: "absolute",

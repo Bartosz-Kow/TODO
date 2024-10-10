@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
   },
   modeTitle: {
     fontSize: 16,
-    marginVertical: 8,
+    marginVertical: 1,
     fontWeight: "bold",
   },
   radioButtonGroup: {
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
   radioButtonContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 3,
+    marginVertical: 1,
     width: "100%",
   },
   radioButtonLabel: {
