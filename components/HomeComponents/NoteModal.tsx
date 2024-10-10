@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View, ScrollView, Text, Modal } from "react-native";
 import { Chip, TextInput, Button } from "react-native-paper";
+import { useTheme } from "@/constants/ThemeContext";
 
 interface NoteModalProps {
   visible: boolean;
@@ -29,6 +30,8 @@ const NoteModal: React.FC<NoteModalProps> = ({
   editIndex,
   removeTask,
 }) => {
+  const { isDarkMode } = useTheme(); // Pobranie trybu z kontekstu
+
   return (
     <Modal
       visible={visible}
@@ -37,24 +40,39 @@ const NoteModal: React.FC<NoteModalProps> = ({
       statusBarTranslucent={true}
       transparent={true}
     >
-      <View style={styles.modalContent}>
+      <View
+        style={[
+          styles.modalContent,
+          { backgroundColor: isDarkMode ? "#1E293B" : "white" }, // Zmienione tło modala w trybie ciemnym
+        ]}
+      >
         <TextInput
           label="Write notes!"
           multiline
-          style={styles.textInput}
-          textColor="black"
+          style={[
+            styles.textInput,
+            { backgroundColor: isDarkMode ? "#334155" : "white" }, // Tło TextInput w trybie ciemnym
+          ]}
+          textColor={isDarkMode ? "white" : "black"}
           cursorColor="#66D1A6"
           value={note}
           onChangeText={setNote}
           theme={{
             colors: {
               primary: "#66D1A6",
-              placeholder: "black",
+              placeholder: isDarkMode ? "#D1D5DB" : "black", // Kolor placeholdera
             },
           }}
         />
         <View style={styles.modalCategoryContainer}>
-          <Text style={styles.modalCategoryTitle}>Select category:</Text>
+          <Text
+            style={[
+              styles.modalCategoryTitle,
+              { color: isDarkMode ? "white" : "black" }, // Kolor tekstu dla kategorii
+            ]}
+          >
+            Select category:
+          </Text>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             {categories.map((category) => (
               <Chip
@@ -62,11 +80,24 @@ const NoteModal: React.FC<NoteModalProps> = ({
                 style={[
                   styles.chip,
                   selectedCategory === category.name && styles.selectedChip,
+                  {
+                    backgroundColor:
+                      selectedCategory === category.name
+                        ? category.color
+                        : isDarkMode
+                        ? "#334155" // Tło chipów w trybie ciemnym
+                        : "white",
+                  },
                 ]}
                 mode="outlined"
                 onPress={() => setSelectedCategory(category.name)}
                 textStyle={{
-                  color: selectedCategory === category.name ? "white" : "black",
+                  color:
+                    selectedCategory === category.name
+                      ? "white"
+                      : isDarkMode
+                      ? "white"
+                      : "black",
                 }}
               >
                 {category.name}
@@ -88,7 +119,10 @@ const NoteModal: React.FC<NoteModalProps> = ({
         >
           Delete
         </Button>
-        <Button textColor="#1F2937" onPress={hideModal}>
+        <Button
+          textColor={isDarkMode ? "#CBD5E1" : "#1F2937"}
+          onPress={hideModal}
+        >
           Cancel
         </Button>
       </View>
@@ -100,7 +134,6 @@ const styles = StyleSheet.create({
   modalContent: {
     width: "90%",
     height: "100%",
-    backgroundColor: "white",
     borderRadius: 20,
     alignSelf: "center",
     padding: 20,
@@ -114,13 +147,11 @@ const styles = StyleSheet.create({
   textInput: {
     width: "100%",
     height: 370,
-    backgroundColor: "white",
     borderTopWidth: 0,
     borderColor: "#E5E7EB",
     borderRadius: 12,
     padding: 15,
     fontSize: 16,
-    color: "#374151",
   },
   modalCategoryContainer: {
     marginVertical: 20,
