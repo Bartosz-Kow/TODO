@@ -1,15 +1,17 @@
 import { useFocusEffect } from "expo-router";
-import React, { useState, useCallback, Children } from "react";
+import React, { useState, useCallback } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { useTheme } from "@/constants/ThemeContext";
 import {
   getUserName,
   getThemeMode,
 } from "@/components/storage/userPreferences";
-
+import { clearAllData } from "@/components/storage/AsyncStorage";
 import AvatarPicker from "@/components/ProfileComponents/AvatarPicker";
 import Statistics from "@/components/ProfileComponents/Statistics";
 import RadioButtons from "@/components/ProfileComponents/RadioButtons";
+import { IconButton } from "react-native-paper";
+import * as Updates from "expo-updates";
 
 const Profile = () => {
   const { isDarkMode, setIsDarkMode } = useTheme();
@@ -27,6 +29,11 @@ const Profile = () => {
     } catch (e) {
       console.log("Error reading data", e);
     }
+  };
+
+  const handleLogout = async () => {
+    await clearAllData();
+    await Updates.reloadAsync();
   };
 
   useFocusEffect(
@@ -61,6 +68,12 @@ const Profile = () => {
           Welcome <Text style={styles.boldText}>{name || "User"}</Text>!{" "}
           Customize your profile!
         </Text>
+        <IconButton
+          icon="logout"
+          size={24}
+          iconColor={isDarkMode ? "#F8F9FA" : "#555"}
+          onPress={handleLogout}
+        />
       </View>
 
       <AvatarPicker />
@@ -83,17 +96,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 15,
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
-
   userName: {
     fontSize: 20,
     fontWeight: "bold",
@@ -103,12 +106,16 @@ const styles = StyleSheet.create({
   titleContainer: {
     marginBottom: 10,
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
   },
   title: {
     fontSize: 24,
     textAlign: "center",
     color: "#555",
     fontWeight: "600",
+    flex: 1,
   },
   boldText: {
     color: "#66D1A6",

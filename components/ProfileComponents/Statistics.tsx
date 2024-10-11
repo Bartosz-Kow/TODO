@@ -11,6 +11,7 @@ import {
 } from "@/components/storage/userStatistics";
 import { useTheme } from "@/constants/ThemeContext";
 import { useFocusEffect } from "expo-router";
+import * as Updates from "expo-updates";
 
 const Statistics = () => {
   const { isDarkMode } = useTheme();
@@ -48,7 +49,10 @@ const Statistics = () => {
       setAddedTasksCount(0);
       setDeletedTasksCount(0);
       setFavoriteCategory("");
+
       await loadStats();
+
+      await Updates.reloadAsync();
     } catch (e) {
       console.log("Error clearing statistics", e);
     }
