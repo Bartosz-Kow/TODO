@@ -9,16 +9,32 @@ import {
   Keyboard,
   StatusBar,
 } from "react-native";
-import { FAB, Searchbar, PaperProvider } from "react-native-paper";
+import {
+  FAB,
+  Searchbar,
+  PaperProvider,
+  ActivityIndicator,
+} from "react-native-paper";
 import { LogoText } from "@/components/Texts/text";
 import CategoryChips from "@/components/HomeComponents/CategoryChips";
 import TaskList from "@/components/HomeComponents/TaskList";
 import NoteModal from "@/components/HomeComponents/NoteModal";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  setUserTask,
+  getUserTask,
+  getThemeMode,
+} from "@/components/storage/userPreferences";
+import {
+  setAddedCount,
+  getAddedCount,
+  setDeletedCount,
+  getDeletedCount,
+} from "@/components/storage/userStatistics";
 import { useTheme } from "@/constants/ThemeContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = () => {
-  const { isDarkMode } = useTheme();
+  const { isDarkMode, setIsDarkMode } = useTheme();
   const [isVisible, setVisible] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
   const [note, setNote] = useState<string>("");
@@ -32,7 +48,10 @@ const Home = () => {
   const [categoryCounts, setCategoryCounts] = useState<{
     [key: string]: number;
   }>({});
-
+  const [loading, setLoading] = useState<boolean>(true);
+  const [valueBtn, setValueBtn] = useState(
+    isDarkMode ? "darkMode" : "lightMode"
+  );
   const categories = [
     { name: "Important", color: "#FDE99D" },
     { name: "Shopping", color: "#B0E9CA" },
@@ -41,17 +60,48 @@ const Home = () => {
   ];
 
   useEffect(() => {
-    const loadStats = async () => {
-      const addedTask = await AsyncStorage.getItem("@addedTaskCount");
-      const deletedTask = await AsyncStorage.getItem("@deletedTaskCount");
-      const savedCategoryCounts = await AsyncStorage.getItem("@categoryCounts");
-      if (addedTask != null) setAddedTasksCount(parseInt(addedTask));
-      if (deletedTask != null) setDeletedTasksCount(parseInt(deletedTask));
-      if (savedCategoryCounts != null)
-        setCategoryCounts(JSON.parse(savedCategoryCounts));
+    const loadTasksAndThemeMode = async () => {
+      try {
+        setLoading(true);
+
+        const storedTasks = await getUserTask();
+        const addedTask = await getAddedCount();
+        const deletedTask = await getDeletedCount();
+        const savedCategoryCounts = await AsyncStorage.getItem(
+          "@categoryCounts"
+        );
+
+        if (storedTasks != null) {
+          setTasks(storedTasks);
+        }
+        setAddedTasksCount(addedTask);
+        setDeletedTasksCount(deletedTask);
+        if (savedCategoryCounts != null) {
+          setCategoryCounts(JSON.parse(savedCategoryCounts));
+        }
+
+        const savedThemeMode = await getThemeMode();
+        console.log("Loaded theme mode:", savedThemeMode);
+        if (savedThemeMode === "darkMode") {
+          setIsDarkMode(true);
+          setValueBtn("darkMode");
+        } else {
+          setIsDarkMode(false);
+          setValueBtn("lightMode");
+        }
+      } catch (error) {
+        console.error("Error loading tasks or theme mode:", error);
+      } finally {
+        setLoading(false);
+      }
     };
-    loadStats();
+
+    loadTasksAndThemeMode();
   }, []);
+
+  useEffect(() => {
+    setUserTask(tasks);
+  }, [tasks]);
 
   useEffect(() => {
     AsyncStorage.setItem("@categoryCounts", JSON.stringify(categoryCounts));
@@ -75,13 +125,12 @@ const Home = () => {
 
         const newCount = addedTasksCount + 1;
         setAddedTasksCount(newCount);
+        await setAddedCount(newCount);
 
         setCategoryCounts((prevCounts) => ({
           ...prevCounts,
           [selectedCategory]: (prevCounts[selectedCategory] || 0) + 1,
         }));
-
-        await AsyncStorage.setItem("@addedTaskCount", newCount.toString());
       }
 
       setNote("");
@@ -110,6 +159,7 @@ const Home = () => {
 
     const newCount = deletedTasksCount + 1;
     setDeletedTasksCount(newCount);
+    await setDeletedCount(newCount);
 
     if (taskToRemove.category in categoryCounts) {
       setCategoryCounts((prevCounts) => ({
@@ -117,8 +167,6 @@ const Home = () => {
         [taskToRemove.category]: prevCounts[taskToRemove.category] - 1,
       }));
     }
-
-    await AsyncStorage.setItem("@deletedTaskCount", newCount.toString());
   };
 
   const editTask = (index: number) => {
@@ -173,13 +221,21 @@ const Home = () => {
                 setSearchQuery={setSearchQuery}
               />
 
-              <TaskList
-                tasks={tasks}
-                editTask={editTask}
-                categories={categories}
-                selectedCategory={selectedCategory}
-                searchQuery={searchQuery}
-              />
+              {loading ? (
+                <ActivityIndicator
+                  size="large"
+                  color={isDarkMode ? "white" : "black"}
+                  style={styles.loadingIndicator}
+                />
+              ) : (
+                <TaskList
+                  tasks={tasks}
+                  editTask={editTask}
+                  categories={categories}
+                  selectedCategory={selectedCategory}
+                  searchQuery={searchQuery}
+                />
+              )}
 
               <FAB
                 icon="plus"
@@ -233,6 +289,9 @@ const styles = StyleSheet.create({
     width: "95%",
     borderRadius: 12,
     borderWidth: 1,
+  },
+  loadingIndicator: {
+    marginTop: 20,
   },
 });
 

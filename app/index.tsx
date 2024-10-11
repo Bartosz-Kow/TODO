@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { TextInput } from "react-native-paper";
 import { router } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setUserName, getUserName } from "@/components/storage/userPreferences";
 
 export default function Index() {
