@@ -11,6 +11,7 @@ import {
 import { TextInput } from "react-native-paper";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setUserName, getUserName } from "@/components/storage/userPreferences";
 
 export default function Index() {
   const [name, setName] = useState<string>("");
@@ -18,7 +19,7 @@ export default function Index() {
   useEffect(() => {
     const checkStoredName = async () => {
       try {
-        const storedName = await AsyncStorage.getItem("@storage_Key");
+        const storedName = await getUserName();
         if (storedName) {
           router.push("/(tabs)");
         }
@@ -32,7 +33,7 @@ export default function Index() {
 
   const storeName = async () => {
     try {
-      await AsyncStorage.setItem("@storage_Key", name);
+      await setUserName(name);
       console.log("Name stored:", name);
       router.push("/(tabs)");
     } catch (e) {

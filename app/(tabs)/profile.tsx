@@ -5,6 +5,13 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Avatar, RadioButton, IconButton } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { useTheme } from "@/constants/ThemeContext";
+import { STORAGE_KEYS } from "@/components/storage/storageKeys";
+import {
+  getUserName,
+  setUserName,
+  setUserImage,
+  getUserImage,
+} from "@/components/storage/userPreferences";
 
 const Profile = () => {
   const { isDarkMode, setIsDarkMode } = useTheme();
@@ -50,15 +57,15 @@ const Profile = () => {
     if (!result.canceled) {
       const selectedImageUri = result.assets[0].uri;
       setImage(selectedImageUri);
-      await AsyncStorage.setItem("@userImage", selectedImageUri);
+      await setUserImage(selectedImageUri);
     }
   };
 
   const readName = async () => {
     try {
-      const value = await AsyncStorage.getItem("@storage_Key");
-      if (value !== null) {
-        setName(value);
+      const userName = await getUserName();
+      if (userName !== null) {
+        setName(userName);
       }
     } catch (e) {
       console.log("Error reading data", e);
@@ -89,7 +96,7 @@ const Profile = () => {
 
   const loadImage = async () => {
     try {
-      const storedImage = await AsyncStorage.getItem("@userImage");
+      const storedImage = await getUserImage();
       if (storedImage !== null) {
         setImage(storedImage);
       }

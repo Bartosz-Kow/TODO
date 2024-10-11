@@ -45,7 +45,6 @@ const Home = () => {
       const addedTask = await AsyncStorage.getItem("@addedTaskCount");
       const deletedTask = await AsyncStorage.getItem("@deletedTaskCount");
       const savedCategoryCounts = await AsyncStorage.getItem("@categoryCounts");
-
       if (addedTask != null) setAddedTasksCount(parseInt(addedTask));
       if (deletedTask != null) setDeletedTasksCount(parseInt(deletedTask));
       if (savedCategoryCounts != null)
