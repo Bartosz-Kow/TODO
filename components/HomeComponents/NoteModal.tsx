@@ -105,11 +105,16 @@ const NoteModal: React.FC<NoteModalProps> = ({
             ))}
           </ScrollView>
         </View>
-        <Button textColor="#66D1A6" onPress={handleAddTask}>
+        <Button
+          textColor="#66D1A6"
+          onPress={handleAddTask}
+          labelStyle={styles.buttonLabel}
+        >
           {isEditMode ? "Update" : "Apply"}
         </Button>
         <Button
           textColor="red"
+          labelStyle={styles.buttonLabel}
           onPress={() => {
             if (editIndex !== null) {
               removeTask(editIndex);
@@ -119,10 +124,7 @@ const NoteModal: React.FC<NoteModalProps> = ({
         >
           Delete
         </Button>
-        <Button
-          textColor={isDarkMode ? "#CBD5E1" : "#1F2937"}
-          onPress={hideModal}
-        >
+        <Button labelStyle={styles.buttonLabel} onPress={hideModal}>
           Cancel
         </Button>
       </View>
@@ -158,7 +160,7 @@ const styles = StyleSheet.create({
   },
   modalCategoryTitle: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "Montserrat-Bold",
     marginBottom: 10,
   },
   chip: {
@@ -167,6 +169,10 @@ const styles = StyleSheet.create({
   },
   selectedChip: {
     backgroundColor: "#66D1A6",
+  },
+  buttonLabel: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 16,
   },
 });
 
