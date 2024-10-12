@@ -42,7 +42,7 @@ export default function Index() {
   };
 
   if (!fontsLoaded) {
-    return <ActivityIndicator size="large" />;
+    return null;
   }
   return (
     <SafeAreaView style={styles.container}>

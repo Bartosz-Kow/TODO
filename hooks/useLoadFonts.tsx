@@ -8,10 +8,11 @@ export const useLoadFonts = () => {
     "Montserrat-Bold": require("../assets/fonts/Montserrat-Bold.ttf"),
     "Roboto-Thin": require("../assets/fonts/Roboto-Thin.ttf"),
     "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
+    "SpaceMono-Regular": require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
   if (!fontsLoaded) {
-    return <ActivityIndicator size="large" />;
+    return false;
   }
 
   return fontsLoaded;

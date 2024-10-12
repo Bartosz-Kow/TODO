@@ -12,6 +12,7 @@ import Statistics from "@/components/ProfileComponents/Statistics";
 import RadioButtons from "@/components/ProfileComponents/RadioButtons";
 import { IconButton } from "react-native-paper";
 import * as Updates from "expo-updates";
+import { useLoadFonts } from "@/hooks/useLoadFonts";
 
 const Profile = () => {
   const { isDarkMode, setIsDarkMode } = useTheme();
@@ -19,6 +20,7 @@ const Profile = () => {
   const [valueBtn, setValueBtn] = useState(
     isDarkMode ? "darkMode" : "lightMode"
   );
+  const fontsLoaded = useLoadFonts();
 
   const readName = async () => {
     try {
@@ -54,6 +56,10 @@ const Profile = () => {
     }, [])
   );
 
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <View
       style={[
@@ -63,10 +69,15 @@ const Profile = () => {
     >
       <View style={styles.titleContainer}>
         <Text
-          style={[styles.title, { color: isDarkMode ? "#F8F9FA" : "#555" }]}
+          style={[
+            styles.title,
+            {
+              color: isDarkMode ? "#F8F9FA" : "#555",
+              fontFamily: fontsLoaded ? "Montserrat-Bold" : "System",
+            },
+          ]}
         >
           Welcome <Text style={styles.boldText}>{name || "User"}</Text>!{" "}
-          Customize your profile!
         </Text>
         <IconButton
           icon="logout"
@@ -79,7 +90,13 @@ const Profile = () => {
       <AvatarPicker />
 
       <Text
-        style={[styles.userName, { color: isDarkMode ? "#F8F9FA" : "#555" }]}
+        style={[
+          styles.userName,
+          {
+            color: isDarkMode ? "#F8F9FA" : "#555",
+            fontFamily: fontsLoaded ? "Montserrat-Bold" : "System",
+          },
+        ]}
       >
         {name || "Your Name"}
       </Text>
@@ -99,7 +116,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 20,
-    fontWeight: "bold",
+
     marginVertical: 5,
     color: "#333",
   },

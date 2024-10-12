@@ -3,12 +3,14 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { setThemeMode } from "../storage/userPreferences";
+import { useLoadFonts } from "@/hooks/useLoadFonts";
 
 const RadioButtons = () => {
   const { isDarkMode, setIsDarkMode } = useTheme();
   const [valueBtn, setValueBtn] = useState(
     isDarkMode ? "darkMode" : "lightMode"
   );
+  const fontsLoaded = useLoadFonts();
 
   const handleChangeMode = async (newValue: string) => {
     setValueBtn(newValue);
@@ -16,10 +18,21 @@ const RadioButtons = () => {
     setIsDarkMode(isDarkMode);
     await setThemeMode(isDarkMode);
   };
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <View>
       <Text
-        style={[styles.modeTitle, { color: isDarkMode ? "#F8F9FA" : "#555" }]}
+        style={[
+          styles.modeTitle,
+          {
+            color: isDarkMode ? "#F8F9FA" : "#555",
+            fontFamily: fontsLoaded ? "Montserrat-Bold" : "System",
+          },
+        ]}
       >
         Choose your app mode:
       </Text>
@@ -57,7 +70,6 @@ const styles = StyleSheet.create({
   modeTitle: {
     fontSize: 16,
     marginVertical: 1,
-    fontWeight: "bold",
   },
   radioButtonGroup: {
     flexDirection: "row",

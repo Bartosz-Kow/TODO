@@ -1,7 +1,6 @@
-// Statistics.tsx
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { IconButton } from "react-native-paper";
+import { IconButton, ActivityIndicator } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   setAddedCount,
@@ -12,12 +11,14 @@ import {
 import { useTheme } from "@/constants/ThemeContext";
 import { useFocusEffect } from "expo-router";
 import * as Updates from "expo-updates";
+import { useLoadFonts } from "@/hooks/useLoadFonts";
 
 const Statistics = () => {
   const { isDarkMode } = useTheme();
   const [addedTasksCount, setAddedTasksCount] = useState<number>(0);
   const [deletedTasksCount, setDeletedTasksCount] = useState<number>(0);
   const [favoriteCategory, setFavoriteCategory] = useState<string>("");
+  const fontsLoaded = useLoadFonts();
 
   const loadStats = async () => {
     try {
@@ -57,11 +58,16 @@ const Statistics = () => {
       console.log("Error clearing statistics", e);
     }
   };
+
   useFocusEffect(
     useCallback(() => {
       loadStats();
     }, [])
   );
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <View
@@ -79,15 +85,26 @@ const Statistics = () => {
         <Text
           style={[
             styles.statisticsTitle,
-            { color: isDarkMode ? "white" : "#1F2937" },
+            {
+              color: isDarkMode ? "white" : "#1F2937",
+              fontFamily: fontsLoaded ? "Montserrat-Bold" : "System",
+            },
           ]}
         >
           Statistics:
         </Text>
         <TouchableOpacity onPress={handleClearStatistics}>
-          <Text style={styles.clearAllBtn}>Clear all</Text>
+          <Text
+            style={[
+              styles.clearAllBtn,
+              { fontFamily: fontsLoaded ? "Montserrat-Bold" : "System" },
+            ]}
+          >
+            Clear all
+          </Text>
         </TouchableOpacity>
       </View>
+
       <View
         style={[
           styles.statisticItem,
@@ -102,18 +119,13 @@ const Statistics = () => {
         <Text
           style={[
             styles.statisticLabel,
-            { color: isDarkMode ? "#F8F9FA" : "#555" },
+            {
+              color: isDarkMode ? "#F8F9FA" : "#555",
+              fontFamily: fontsLoaded ? "Roboto-Regular" : "System",
+            },
           ]}
         >
-          Added Tasks:{" "}
-          <Text
-            style={[
-              styles.statisticLabel,
-              { color: isDarkMode ? "#F8F9FA" : "#555" },
-            ]}
-          >
-            {addedTasksCount}
-          </Text>
+          Added Tasks: {addedTasksCount}
         </Text>
       </View>
 
@@ -131,18 +143,13 @@ const Statistics = () => {
         <Text
           style={[
             styles.statisticLabel,
-            { color: isDarkMode ? "#F8F9FA" : "#555" },
+            {
+              color: isDarkMode ? "#F8F9FA" : "#555",
+              fontFamily: fontsLoaded ? "Roboto-Regular" : "System",
+            },
           ]}
         >
-          Deleted Tasks:{" "}
-          <Text
-            style={[
-              styles.statisticLabel,
-              { color: isDarkMode ? "white" : "#333" },
-            ]}
-          >
-            {deletedTasksCount}
-          </Text>
+          Deleted Tasks: {deletedTasksCount}
         </Text>
       </View>
 
@@ -160,18 +167,12 @@ const Statistics = () => {
         <Text
           style={[
             styles.statisticLabel,
-            { color: isDarkMode ? "white" : "#333" },
+            {
+              color: isDarkMode ? "white" : "#333",
+            },
           ]}
         >
-          Favourite category:{" "}
-          <Text
-            style={[
-              styles.statisticLabel,
-              { color: isDarkMode ? "white" : "#333" },
-            ]}
-          >
-            {favoriteCategory || "None"}
-          </Text>
+          Favourite category: {favoriteCategory || "None"}
         </Text>
       </View>
     </View>
@@ -214,7 +215,6 @@ const styles = StyleSheet.create({
   clearAllBtn: {
     fontSize: 14,
     color: "#66D1A6",
-    fontWeight: "bold",
   },
   statisticItem: {
     flexDirection: "row",
@@ -234,10 +234,10 @@ const styles = StyleSheet.create({
   statisticLabel: {
     fontSize: 14,
     marginLeft: 5,
+    fontWeight: "bold",
   },
   statisticsTitle: {
     fontSize: 20,
-    fontWeight: "bold",
     color: "#1F2937",
     marginBottom: 5,
   },
