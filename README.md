@@ -4,7 +4,7 @@ Welcome to the Task Management App! A user-friendly mobile application built wit
 
 ## 🎥 Demo
 
-![App Demo](Todo/assets/images/gifgit.gif)
+![App Demo](TODO/assets/images/gifgit.gif)
 
 > **Note:** Add a short GIF or screen recording showing the app in action to demonstrate its functionality.
 
@@ -58,7 +58,7 @@ The app utilizes AsyncStorage to persist user data, ensuring that your informati
 
 |                   Light Mode                    |                   Dark Mode                   |
 | :---------------------------------------------: | :-------------------------------------------: |
-| ![Light Mode](Todo/assets/images/lightmode.jpg) | ![Dark Mode](Todo/assets/images/darkmode.jpg) |
+| ![Light Mode](TODO/assets/images/lightmode.jpg) | ![Dark Mode](TODO/assets/images/darkmode.jpg) |
 
 ## ⚙️ Installation and Setup
 
