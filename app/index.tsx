@@ -8,13 +8,14 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { TextInput } from "react-native-paper";
+import { ActivityIndicator, TextInput } from "react-native-paper";
 import { router } from "expo-router";
 import { setUserName, getUserName } from "@/components/storage/userPreferences";
+import { useLoadFonts } from "@/hooks/useLoadFonts";
 
 export default function Index() {
   const [name, setName] = useState<string>("");
-
+  const fontsLoaded = useLoadFonts();
   useEffect(() => {
     const checkStoredName = async () => {
       try {
@@ -40,6 +41,9 @@ export default function Index() {
     }
   };
 
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" />;
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
@@ -101,13 +105,14 @@ const styles = StyleSheet.create({
     width: "90%",
     textAlign: "left",
     marginBottom: 16,
-    fontWeight: "bold",
+    fontFamily: "Montserrat-Bold",
   },
   subTitle: {
     fontSize: 19,
     color: "#1f2937",
     textAlign: "center",
     margin: 10,
+    fontFamily: "Roboto-Regular",
   },
   buttonText: {
     fontWeight: "bold",
